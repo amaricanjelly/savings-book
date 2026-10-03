@@ -528,7 +528,7 @@
   .type-badge.deposit { background: #e6f4ea; color: #1e5e47; border: 1px solid #b8d9c4; }
   .type-badge.withdraw{ background: #fdecea; color: #a8321f; border: 1px solid #f3c4bc; }
 
-  /* ================= LOAN KHATA — 3-COLUMN LIST (Loan | Date | Joma) ================= */
+  /* ================= LOAN KHATA — 3-COLUMN LIST ================= */
   .khata-table.loan-3col { min-width: 0; }
   .khata-table.loan-3col .col-loan-amount { width: 34%; text-align: right; font-weight: 700; color: var(--loan); }
   .khata-table.loan-3col .col-date-simple  { width: 33%; text-align: center; color: #4a3d22; font-size: 0.85rem; }
@@ -646,7 +646,7 @@ import {
 /* ============================================================
    APP VERSION
    ============================================================ */
-const APP_VERSION = "2.5.0";
+const APP_VERSION = "2.6.0";
 console.log("[সঞ্চয় খাতা] App version:", APP_VERSION);
 
 /* ============================================================
@@ -666,6 +666,26 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app, "https://hot-massage-cf84f-default-rtdb.firebaseio.com");
 
 /* ============================================================
+   ⚠️ CRITICAL FIX — BOOK TYPE NORMALIZATION
+   ------------------------------------------------------------
+   UI uses "loan" (singular) for nav tabs, routes, CSS classes.
+   Firebase uses "loans" (plural) as the DB key.
+   state.transactions = { savings: {}, loans: {} }  ← plural.
+
+   The bug in v2.5.0 and earlier: when the UI passed "loan" into
+   listenToTransactions / renderBookView, it tried to access
+   state.transactions["loan"] which is UNDEFINED → TypeError.
+
+   Fix: normalize "loan" → "loans" at every entry point.
+   "savings" stays "savings" (already plural in DB).
+   ============================================================ */
+function normKey(bookType) {
+  if (bookType === "loan" || bookType === "loans") return "loans";
+  if (bookType === "savings" || bookType === "saving") return "savings";
+  return bookType; // fallback — shouldn't happen
+}
+
+/* ============================================================
    STATE
    ============================================================ */
 const state = {
@@ -673,7 +693,7 @@ const state = {
   loanMembers: {},
   transactions: { savings: {}, loans: {} },
   currentMemberId: null,
-  currentBookType: null,
+  currentBookType: null,   // stores NORMALIZED key: "savings" | "loans"
   currentView: "home",
   searchQuery: "",
   loading: true,
@@ -736,7 +756,7 @@ function closeModal() {
 }
 
 /* ============================================================
-   TRANSACTION SORT KEY — module-level
+   TRANSACTION SORT KEY
    ============================================================ */
 function txSortKey(tx) {
   if (tx && typeof tx.timestamp === "number" && !isNaN(tx.timestamp)) {
@@ -789,21 +809,29 @@ let _activeTxKey = null;
 function listenToTransactions(bookType, memberId) {
   if (!memberId || !bookType) return;
 
-  const key = `${bookType}:${memberId}`;
-  if (_activeTxKey === key && typeof _activeTxUnsubscribe === "function") return;
+  const key = normKey(bookType);            // <-- NORMALIZE
+  if (!key) { console.warn("[listenToTransactions] invalid bookType:", bookType); return; }
+
+  // Defensive: ensure the bucket exists before writing into it.
+  if (!state.transactions[key]) state.transactions[key] = {};
+
+  const composite = `${key}:${memberId}`;
+  if (_activeTxKey === composite && typeof _activeTxUnsubscribe === "function") return;
 
   if (typeof _activeTxUnsubscribe === "function") {
     try { _activeTxUnsubscribe(); } catch (e) { /* ignore */ }
   }
   _activeTxUnsubscribe = null;
-  _activeTxKey = key;
+  _activeTxKey = composite;
 
   _activeTxUnsubscribe = onValue(
-    ref(db, `transactions/${bookType}/${memberId}`),
+    ref(db, `transactions/${key}/${memberId}`),
     (snap) => {
-      state.transactions[bookType][memberId] = snap.val() || {};
-      if (state.currentMemberId === memberId && state.currentBookType === bookType) {
-        renderBookView(bookType, memberId);
+      // Defensive again — guarantee the bucket exists inside the callback.
+      if (!state.transactions[key]) state.transactions[key] = {};
+      state.transactions[key][memberId] = snap.val() || {};
+      if (state.currentMemberId === memberId && state.currentBookType === key) {
+        renderBookView(key, memberId);
       }
     },
     (err) => {
@@ -823,6 +851,10 @@ function stopTransactionListener() {
 
 /* ============================================================
    ROUTER
+   ------------------------------------------------------------
+   state.currentBookType ALWAYS stores the normalized key:
+     "savings" | "loans"
+   Nav/tab highlighting uses the UI value "loan" separately.
    ============================================================ */
 function renderCurrentView() {
   const main = document.getElementById("mainContent");
@@ -860,9 +892,10 @@ function updateNavActive() {
       el.classList.add("active");
       if (nav === "loan") el.classList.add("loan");
     }
+    // Book view highlight: currentBookType is normalized ("savings" | "loans")
     if (nav === "savings" && state.currentView === "book" && state.currentBookType === "savings")
       el.classList.add("active");
-    if (nav === "loan" && state.currentView === "book" && state.currentBookType === "loan")
+    if (nav === "loan" && state.currentView === "book" && state.currentBookType === "loans")
       el.classList.add("active", "loan");
   });
 }
@@ -972,7 +1005,7 @@ function renderHome() {
    ============================================================ */
 function renderBookList(bookType) {
   const main = document.getElementById("mainContent");
-  const isLoan = bookType === "loan";
+  const isLoan = (bookType === "loan" || bookType === "loans");
   const members = Object.entries(isLoan ? state.loanMembers : state.savingsMembers);
 
   const title = isLoan ? "🏦 ঋণ তালিকা" : "💰 সঞ্চয় তালিকা";
@@ -1000,7 +1033,8 @@ function renderBookList(bookType) {
 }
 
 function memberCardHTML(bookType, id, m) {
-  const isLoan = bookType === "loan";
+  const isLoan = (bookType === "loan" || bookType === "loans");
+  const dataBookType = isLoan ? "loan" : "savings"; // UI value in DOM
   const badge = isLoan
     ? `<span class="member-type-badge badge-loan">🏦 LOAN</span>`
     : `<span class="member-type-badge badge-savings">💰 SAVINGS</span>`;
@@ -1010,7 +1044,7 @@ function memberCardHTML(bookType, id, m) {
     const totalLoan = m.totalLoan || 0;
     const totalPaid = m.totalPaid || 0;
     return `
-      <div class="member-card loan" data-member-id="${id}" data-book-type="loan">
+      <div class="member-card loan" data-member-id="${id}" data-book-type="${dataBookType}">
         <div class="member-header">
           <span class="member-name">${m.name || "নাম নেই"}</span>
           <span class="member-balance">বাকি ${formatCurrency(outstanding)}</span>
@@ -1036,7 +1070,7 @@ function memberCardHTML(bookType, id, m) {
   const deposit = m.totalDeposit || 0;
   const withdraw = m.totalWithdraw || 0;
   return `
-    <div class="member-card savings" data-member-id="${id}" data-book-type="savings">
+    <div class="member-card savings" data-member-id="${id}" data-book-type="${dataBookType}">
       <div class="member-header">
         <span class="member-name">${m.name || "নাম নেই"}</span>
         <span class="member-balance">${formatCurrency(balance)}</span>
@@ -1060,20 +1094,10 @@ function memberCardHTML(bookType, id, m) {
 
 /* ============================================================
    MEMBER CARD EVENT BINDING
-   ------------------------------------------------------------
-   Fixed: card click and "খাতা" button both call openBook()
-   for BOTH savings and loan. Previously loan card click was
-   silently failing because the .member-card click handler
-   only checked `.member-actions` but not whether the click
-   was on an actual interactive child — and loan-specific
-   buttons used different data-action values that were not
-   wired up in the listener. This version wires everything.
    ============================================================ */
 function bindMemberCardEvents() {
-  // 1. Card-level click — opens the book (savings OR loan)
   document.querySelectorAll(".member-card").forEach((card) => {
     card.addEventListener("click", (e) => {
-      // If user clicked inside .member-actions, let the button handlers deal with it
       if (e.target.closest(".member-actions")) return;
       const bookType = card.dataset.bookType;
       const memberId = card.dataset.memberId;
@@ -1082,7 +1106,6 @@ function bindMemberCardEvents() {
     });
   });
 
-  // 2. "খাতা" button — explicitly open the book
   document.querySelectorAll('[data-action="open"]').forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -1095,53 +1118,33 @@ function bindMemberCardEvents() {
     });
   });
 
-  // 3. Savings actions
-  document.querySelectorAll('[data-action="deposit"]').forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openDepositModal(btn.dataset.memberId);
-    });
-  });
+  document.querySelectorAll('[data-action="deposit"]').forEach((btn) =>
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openDepositModal(btn.dataset.memberId); }));
+  document.querySelectorAll('[data-action="withdraw"]').forEach((btn) =>
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openWithdrawModal(btn.dataset.memberId); }));
+  document.querySelectorAll('[data-action="addLoan"]').forEach((btn) =>
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openNewLoanModal(btn.dataset.memberId); }));
+  document.querySelectorAll('[data-action="repay"]').forEach((btn) =>
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openRepayModal(btn.dataset.memberId); }));
 
-  document.querySelectorAll('[data-action="withdraw"]').forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openWithdrawModal(btn.dataset.memberId);
-    });
-  });
-
-  // 4. Loan actions
-  document.querySelectorAll('[data-action="addLoan"]').forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openNewLoanModal(btn.dataset.memberId);
-    });
-  });
-
-  document.querySelectorAll('[data-action="repay"]').forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openRepayModal(btn.dataset.memberId);
-    });
-  });
-
-  // 5. Delete actions (both)
-  document.querySelectorAll('[data-action="delete"]').forEach((btn) => {
+  document.querySelectorAll('[data-action="delete"]').forEach((btn) =>
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const card = btn.closest(".member-card");
       if (!card) return;
       openDeleteMemberFlow(card.dataset.bookType, card.dataset.memberId);
-    });
-  });
+    }));
 }
 
 /* ============================================================
-   BOOK VIEW (Savings + Loan)
+   BOOK VIEW
+   ------------------------------------------------------------
+   IMPORTANT: `bookType` passed in here is NORMALIZED ("savings"|"loans").
    ============================================================ */
 function renderBookView(bookType, memberId) {
   const main = document.getElementById("mainContent");
-  const isLoan = bookType === "loan";
+  const key = normKey(bookType);                 // "savings" | "loans"
+  const isLoan = (key === "loans");
   const member = isLoan ? state.loanMembers[memberId] : state.savingsMembers[memberId];
 
   if (!member) {
@@ -1149,9 +1152,11 @@ function renderBookView(bookType, memberId) {
     return;
   }
 
-  listenToTransactions(bookType, memberId);
+  listenToTransactions(key, memberId);
 
-  const txs = state.transactions[bookType][memberId] || {};
+  // Defensive: guarantee bucket & member entry exist before reading.
+  if (!state.transactions[key]) state.transactions[key] = {};
+  const txs = state.transactions[key][memberId] || {};
 
   const txArray = Object.entries(txs)
     .map(([id, tx]) => ({ id, ...tx }))
@@ -1163,7 +1168,7 @@ function renderBookView(bookType, memberId) {
 
   const titleIcon = isLoan ? "🏦" : "💰";
   const titleBn   = isLoan ? "ঋণ খাতা" : "সঞ্চয় খাতা";
-  const listPath  = isLoan ? "loan" : "savings";
+  const listPath  = isLoan ? "loan" : "savings"; // UI path for back button
   const accentCls = isLoan ? "loan" : "";
 
   let summaryHTML = "";
@@ -1314,20 +1319,20 @@ function renderBookView(bookType, memberId) {
   document.getElementById("bookPrintBtn")?.addEventListener("click", () => window.print());
   document.getElementById("bookBackBtn")?.addEventListener("click", () => {
     stopTransactionListener();
-    state.currentView = listPath;
+    state.currentView = listPath;               // "loan" | "savings" (UI value)
     state.currentMemberId = null;
     state.currentBookType = null;
     renderCurrentView();
   });
   document.getElementById("bookDeleteBtn")?.addEventListener("click", () => {
-    openDeleteMemberFlow(bookType, memberId);
+    openDeleteMemberFlow(key, memberId);       // pass normalized
   });
 
   document.querySelectorAll(".khata-table tbody tr[data-tx-id]").forEach((tr) => {
     tr.addEventListener("click", () => {
       const txId = tr.dataset.txId;
-      const tx = (state.transactions[bookType][memberId] || {})[txId];
-      if (tx) openTransactionDetailModal(bookType, member, tx);
+      const tx = (state.transactions[key][memberId] || {})[txId];
+      if (tx) openTransactionDetailModal(key, member, tx);
     });
   });
 }
@@ -1338,7 +1343,7 @@ function renderBookView(bookType, memberId) {
 function openTransactionDetailModal(bookType, member, tx) {
   const overlay = document.getElementById("modalOverlay");
   const modal = document.getElementById("modalContent");
-  const isLoan = bookType === "loan";
+  const isLoan = (normKey(bookType) === "loans");
 
   let rows = "";
   if (isLoan) {
@@ -1398,7 +1403,10 @@ function openTransactionDetailModal(bookType, member, tx) {
 function openAddMemberModal(preselectedType) {
   const overlay = document.getElementById("modalOverlay");
   const modal = document.getElementById("modalContent");
-  let selectedType = preselectedType || null;
+  // Normalize incoming type for internal logic; UI options stay "savings"|"loan"
+  let selectedType = preselectedType
+    ? (preselectedType === "loans" ? "loan" : preselectedType)
+    : null;
 
   function renderStep1() {
     modal.innerHTML = `
@@ -1457,7 +1465,7 @@ function openAddMemberModal(preselectedType) {
     input.addEventListener("keypress", (e) => { if (e.key === "Enter") saveNewMember(selectedType, input); });
   }
 
-  if (preselectedType) { selectedType = preselectedType; renderStep2(); }
+  if (preselectedType) { selectedType = (preselectedType === "loans" ? "loan" : preselectedType); renderStep2(); }
   else renderStep1();
 
   overlay.classList.add("active");
@@ -1470,7 +1478,11 @@ async function saveNewMember(bookType, input) {
 
   if (!rawName) { showToast("সদস্যের নাম লিখুন।", "error"); input.focus(); return; }
 
-  const isLoan = bookType === "loan";
+  // Normalize once, use everywhere below.
+  const key = normKey(bookType);               // "savings" | "loans"
+  const isLoan = (key === "loans");
+  const uiType = isLoan ? "loan" : "savings";  // stored `type` field for UI reference
+
   const collection = isLoan ? state.loanMembers : state.savingsMembers;
   const duplicate = Object.values(collection || {}).find(
     (m) => (m.normalizedName || (m.name || "").toLowerCase().trim()) === normalizedName
@@ -1495,7 +1507,7 @@ async function saveNewMember(bookType, input) {
     const base = {
       name: rawName,
       normalizedName,
-      type: bookType,
+      type: uiType,
       createdAt: Date.now(),
       createdDate: date
     };
@@ -1511,7 +1523,7 @@ async function saveNewMember(bookType, input) {
     showToast(`সদস্য "${rawName}" (${isLoan ? "ঋণ" : "সঞ্চয়"}) সফলভাবে যোগ করা হয়েছে।`, "success");
     input.value = "";
     closeModal();
-    setTimeout(() => openBook(bookType, memberId), 300);
+    setTimeout(() => openBook(uiType, memberId), 300);
   } catch (error) {
     console.error("Firebase Error:", error);
     showToast("Firebase Error: " + (error.code || error.message), "error");
@@ -1520,15 +1532,19 @@ async function saveNewMember(bookType, input) {
   }
 }
 
+/* ============================================================
+   OPEN BOOK — normalizes bookType once, stores normalized key
+   ============================================================ */
 function openBook(bookType, memberId) {
   if (!bookType || !memberId) {
     console.warn("[openBook] Missing bookType or memberId:", bookType, memberId);
     return;
   }
+  const key = normKey(bookType);              // "savings" | "loans"
   state.currentMemberId = memberId;
-  state.currentBookType = bookType;
+  state.currentBookType = key;                // ALWAYS normalized internally
   state.currentView = "book";
-  listenToTransactions(bookType, memberId);
+  listenToTransactions(key, memberId);
   renderCurrentView();
 }
 
@@ -1818,7 +1834,8 @@ async function processLoanTransaction(memberId, type, amount, description) {
    DELETE MEMBER
    ============================================================ */
 function openDeleteMemberFlow(bookType, memberId) {
-  const isLoan = bookType === "loan";
+  const key = normKey(bookType);              // "savings" | "loans"
+  const isLoan = (key === "loans");
   const member = isLoan ? state.loanMembers[memberId] : state.savingsMembers[memberId];
   if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
 
@@ -1854,7 +1871,7 @@ function openDeleteMemberFlow(bookType, memberId) {
       </div>
     `;
     document.getElementById("delCancel2").onclick = closeModal;
-    document.getElementById("delConfirm").onclick = () => performMemberDelete(bookType, memberId);
+    document.getElementById("delConfirm").onclick = () => performMemberDelete(key, memberId);
   }
 }
 
@@ -1862,7 +1879,8 @@ async function performMemberDelete(bookType, memberId) {
   const btn = document.getElementById("delConfirm");
   setLoading(btn, true, "মুছে ফেলা হচ্ছে...");
 
-  const isLoan = bookType === "loan";
+  const key = normKey(bookType);              // "savings" | "loans"
+  const isLoan = (key === "loans");
   const memberPath = isLoan ? `members/loans/${memberId}` : `members/savings/${memberId}`;
   const txPath     = isLoan ? `transactions/loans/${memberId}` : `transactions/savings/${memberId}`;
 
@@ -1873,11 +1891,11 @@ async function performMemberDelete(bookType, memberId) {
     showToast("সদস্য সফলভাবে মুছে ফেলা হয়েছে।", "success");
     closeModal();
 
-    if (state.currentMemberId === memberId && state.currentBookType === bookType) {
+    if (state.currentMemberId === memberId && state.currentBookType === key) {
       stopTransactionListener();
       state.currentMemberId = null;
       state.currentBookType = null;
-      state.currentView = isLoan ? "loan" : "savings";
+      state.currentView = isLoan ? "loan" : "savings";  // UI value
     }
     renderCurrentView();
   } catch (error) {
