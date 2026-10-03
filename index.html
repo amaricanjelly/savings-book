@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>সঞ্চয় খাতা · Digital Savings Book</title>
+<title>সঞ্চয় খাতা · Digital Savings & Loan Book</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,6 +26,8 @@
     --border: #e0e8e4;
     --danger: #b22222;
     --success: #2e7d32;
+    --loan: #8a3b1f;
+    --loan-soft: #fdf0e8;
     --shadow: 0 8px 20px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
     --radius: 20px;
     --radius-sm: 12px;
@@ -57,6 +59,8 @@
     top: 0;
     z-index: 100;
     border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .logo-area { display: flex; align-items: center; gap: 10px; }
@@ -106,6 +110,9 @@
   .btn-accent { background: var(--accent); color: #1e2a26; border: none; }
   .btn-accent:hover { background: #c9a227; }
   .btn-danger { background: #fff0f0; color: var(--danger); border: 1px solid #fdd8d8; }
+  .btn-loan { background: var(--loan); color: #fff; border: none; }
+  .btn-loan:hover { background: #6f2f18; }
+  .btn-loan-soft { background: var(--loan-soft); color: var(--loan); border: 1px solid #f1d8c9; }
   .btn-sm { padding: 8px 14px; font-size: 0.8rem; }
   .btn-block { width: 100%; }
   .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
@@ -121,7 +128,6 @@
 
   /* ================= SEARCH ================= */
   .search-section { margin-bottom: 20px; }
-
   .search-box {
     display: flex;
     align-items: center;
@@ -157,11 +163,24 @@
   }
 
   /* ================= STATS ================= */
+  .stats-section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-light);
+    font-weight: 700;
+    margin: 18px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stats-section-title.loan { color: var(--loan); }
+
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 8px;
   }
   .stat-card {
     background: var(--card);
@@ -173,6 +192,7 @@
     flex-direction: column;
     gap: 4px;
   }
+  .stat-card.loan { border-color: #f1d8c9; }
   .stat-card .label {
     font-size: 0.75rem;
     color: var(--text-light);
@@ -181,6 +201,7 @@
     letter-spacing: 0.3px;
   }
   .stat-card .value { font-size: 1.4rem; font-weight: 700; color: var(--primary); line-height: 1.2; }
+  .stat-card.loan .value { color: var(--loan); }
 
   /* ================= MEMBER CARDS ================= */
   .member-list { display: flex; flex-direction: column; gap: 14px; }
@@ -197,11 +218,15 @@
     flex-direction: column;
     gap: 12px;
   }
+  .member-card.loan { border-left: 4px solid var(--loan); }
+  .member-card.savings { border-left: 4px solid var(--primary); }
   .member-card:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
+
   .member-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .member-name { font-size: 1.1rem; font-weight: 600; color: var(--primary); }
+  .member-card.loan .member-name { color: var(--loan); }
   .member-balance {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--primary);
     background: #eef6f1;
@@ -209,6 +234,21 @@
     border-radius: 50px;
     white-space: nowrap;
   }
+  .member-card.loan .member-balance { color: var(--loan); background: var(--loan-soft); }
+  .member-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .badge-savings { background: #eef6f1; color: var(--primary); }
+  .badge-loan { background: var(--loan-soft); color: var(--loan); }
+
   .member-meta {
     display: flex;
     gap: 16px;
@@ -246,6 +286,7 @@
     border-bottom: 2px dashed var(--border);
   }
   .book-title h2 { font-size: 1.4rem; color: var(--primary); line-height: 1.2; }
+  .book-title.loan h2 { color: var(--loan); }
   .book-title .sub { font-size: 0.8rem; color: var(--text-light); }
 
   /* ================= DIGITAL KHATA ================= */
@@ -258,6 +299,11 @@
     background-image: linear-gradient(to bottom, rgba(180,160,110,0.06) 1px, transparent 1px);
     background-size: 100% 34px;
   }
+  .khata-page.loan {
+    background: #fdf7f2;
+    border-color: #ecd4c2;
+    background-image: linear-gradient(to bottom, rgba(160,90,60,0.06) 1px, transparent 1px);
+  }
 
   .khata-title {
     text-align: center;
@@ -267,6 +313,8 @@
     letter-spacing: 0.5px;
     margin-bottom: 4px;
   }
+  .khata-page.loan .khata-title { color: var(--loan); }
+
   .khata-sub {
     text-align: center;
     font-size: 0.85rem;
@@ -275,6 +323,7 @@
     border-bottom: 1px dashed #cbbf9c;
     padding-bottom: 12px;
   }
+  .khata-page.loan .khata-sub { color: #8a6a4f; border-bottom-color: #e0c8b4; }
 
   .khata-member {
     display: flex;
@@ -287,6 +336,8 @@
     color: #3a2f1c;
   }
   .khata-member .name { font-weight: 700; color: #5b3a12; }
+  .khata-page.loan .khata-member .name { color: var(--loan); }
+
   .khata-member .balance {
     font-weight: 700;
     color: #1e5e47;
@@ -295,6 +346,31 @@
     border-radius: 4px;
     border: 1px solid #b8d9c4;
   }
+  .khata-page.loan .khata-member .balance {
+    color: var(--loan);
+    background: var(--loan-soft);
+    border-color: #f1d8c9;
+  }
+
+  .khata-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .khata-stat {
+    padding: 8px 10px;
+    background: #fffef9;
+    border: 1px solid #e8dfbf;
+    border-radius: 6px;
+    text-align: center;
+  }
+  .khata-page.loan .khata-stat { background: #fffaf6; border-color: #ecd4c2; }
+  .khata-stat .lbl { font-size: 0.7rem; color: #7a6a4f; text-transform: uppercase; letter-spacing: 0.3px; }
+  .khata-stat .val { font-size: 1rem; font-weight: 700; color: #1e5e47; margin-top: 2px; }
+  .khata-stat .val.loan { color: var(--loan); }
+  .khata-stat .val.paid { color: #2e7d32; }
+  .khata-stat .val.due  { color: #b22222; }
 
   .khata-table-wrap {
     overflow-x: auto;
@@ -303,6 +379,7 @@
     border-radius: 4px;
     background: #fffef9;
   }
+  .khata-page.loan .khata-table-wrap { border-color: #e0c8b4; background: #fffaf6; }
 
   .khata-table {
     width: 100%;
@@ -323,6 +400,12 @@
     border-right: 1px solid #dcd3b5;
     white-space: nowrap;
   }
+  .khata-page.loan .khata-table thead th {
+    background: #f5e2d3;
+    color: var(--loan);
+    border-bottom-color: #e0c8b4;
+    border-right-color: #ecd4c2;
+  }
   .khata-table thead th:last-child { border-right: none; }
 
   .khata-table tbody td {
@@ -332,16 +415,24 @@
     vertical-align: middle;
     font-size: 0.88rem;
   }
+  .khata-page.loan .khata-table tbody td {
+    border-bottom-color: #f1e0d0;
+    border-right-color: #f6e8db;
+  }
   .khata-table tbody td:last-child { border-right: none; }
   .khata-table tbody tr { cursor: pointer; transition: background 0.12s; }
   .khata-table tbody tr:hover { background: #fdf6dd; }
+  .khata-page.loan .khata-table tbody tr:hover { background: #fce8d8; }
   .khata-table tbody tr:last-child td { border-bottom: none; }
 
   .khata-table .col-date { width: 110px; color: #4a3d22; font-size: 0.82rem; }
   .khata-table .col-desc { color: #3a2f1c; }
-  .khata-table .col-dep { width: 100px; text-align: right; color: #1e5e47; font-weight: 600; }
-  .khata-table .col-wd { width: 100px; text-align: right; color: #a8321f; font-weight: 600; }
-  .khata-table .col-bal { width: 110px; text-align: right; color: #5b3a12; font-weight: 700; }
+  .khata-table .col-num  { width: 110px; text-align: right; font-weight: 600; }
+  .khata-table .col-bal  { width: 110px; text-align: right; font-weight: 700; color: #5b3a12; }
+  .khata-table .col-dep  { color: #1e5e47; }
+  .khata-table .col-wd   { color: #a8321f; }
+  .khata-table .col-loan { color: var(--loan); }
+  .khata-table .col-paid { color: #2e7d32; }
   .khata-table .dash { color: #b8a97a; }
 
   .khata-empty {
@@ -368,6 +459,8 @@
   .tx-detail-row .value { font-weight: 600; color: #3a2f1c; text-align: right; }
   .tx-detail-row .value.deposit { color: #1e5e47; }
   .tx-detail-row .value.withdraw { color: #a8321f; }
+  .tx-detail-row .value.loan { color: var(--loan); }
+  .tx-detail-row .value.paid { color: #2e7d32; }
 
   /* ================= EMPTY STATE ================= */
   .empty-state {
@@ -379,6 +472,38 @@
     border: 1px dashed var(--border);
   }
   .empty-state i { font-size: 2rem; color: var(--border); margin-bottom: 12px; }
+
+  /* ================= BOOK TYPE CHOOSER ================= */
+  .book-type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .book-type-option {
+    background: #f9fbf9;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: var(--font-bn);
+  }
+  .book-type-option:hover { transform: translateY(-2px); }
+  .book-type-option .emoji { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+  .book-type-option .bn-name { font-weight: 700; font-size: 1rem; display: block; }
+  .book-type-option .en-name { font-size: 0.75rem; color: var(--text-light); display: block; margin-top: 2px; }
+  .book-type-option.selected-savings {
+    background: #eef6f1;
+    border-color: var(--primary);
+    box-shadow: 0 6px 16px rgba(15,59,44,0.12);
+  }
+  .book-type-option.selected-loan {
+    background: var(--loan-soft);
+    border-color: var(--loan);
+    box-shadow: 0 6px 16px rgba(138,59,31,0.12);
+  }
 
   /* ================= BOTTOM NAV ================= */
   .bottom-nav {
@@ -412,6 +537,7 @@
   }
   .nav-item i { font-size: 1.3rem; }
   .nav-item.active { color: var(--primary); background: #eef6f1; font-weight: 600; }
+  .nav-item.active.loan { color: var(--loan); background: var(--loan-soft); }
 
   /* ================= MODALS ================= */
   .modal-overlay {
@@ -435,7 +561,7 @@
     border-radius: var(--radius);
     padding: 24px;
     width: 100%;
-    max-width: 440px;
+    max-width: 460px;
     box-shadow: 0 24px 48px rgba(0,0,0,0.1);
     transform: translateY(10px);
     transition: transform 0.2s;
@@ -444,6 +570,7 @@
   }
   .modal-overlay.active .modal { transform: translateY(0); }
   .modal h3 { margin-bottom: 18px; color: var(--primary); font-size: 1.3rem; }
+  .modal h3.loan { color: var(--loan); }
 
   .form-group { margin-bottom: 16px; }
   .form-group label {
@@ -531,10 +658,10 @@
   @media print {
     body { background: #fff; padding: 0; font-size: 12pt; }
     .app-header, .bottom-nav, .book-header, .btn, .search-section,
-    .stats-grid, .toast-container, .no-print { display: none !important; }
+    .stats-grid, .stats-section-title, .toast-container, .no-print { display: none !important; }
     .container { max-width: 100%; padding: 0; }
     .book-view { box-shadow: none; border: none; padding: 0; }
-    .khata-page {
+    .khata-page, .khata-page.loan {
       background: #fff !important;
       background-image: none !important;
       border: 1px solid #000 !important;
@@ -563,9 +690,11 @@
   @media (max-width: 480px) {
     .header-actions .btn span { display: none; }
     .header-actions .btn { padding: 10px 12px; }
-    .khata-page { padding: 14px 10px 18px; }
+    .khata-page, .khata-page.loan { padding: 14px 10px 18px; }
     .khata-title { font-size: 1.15rem; }
     .khata-member { font-size: 0.88rem; }
+    .khata-stats-row { grid-template-columns: 1fr; }
+    .book-type-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -577,13 +706,14 @@
     <div class="logo-icon">স</div>
     <div class="logo-text">
       <h1>সঞ্চয় খাতা</h1>
-      <span>Digital Savings Book</span>
+      <span>Digital Savings & Loan Book</span>
     </div>
   </div>
 
   <nav class="desktop-nav">
     <button class="btn btn-sm" data-nav="home"><i class="fas fa-home"></i> <span>Home</span></button>
     <button class="btn btn-sm" data-nav="savings"><i class="fas fa-coins"></i> <span>সঞ্চয়</span></button>
+    <button class="btn btn-sm" data-nav="loan"><i class="fas fa-building-columns"></i> <span>ঋণ</span></button>
     <button class="btn btn-sm" data-nav="addMember"><i class="fas fa-user-plus"></i> <span>Add Member</span></button>
   </nav>
 
@@ -597,10 +727,11 @@
 <!-- ================= MAIN ================= -->
 <main class="container" id="mainContent"></main>
 
-<!-- ================= BOTTOM NAV (no History) ================= -->
+<!-- ================= BOTTOM NAV ================= -->
 <nav class="bottom-nav">
   <button class="nav-item active" data-nav="home"><i class="fas fa-home"></i><span>Home</span></button>
   <button class="nav-item" data-nav="savings"><i class="fas fa-coins"></i><span>সঞ্চয়</span></button>
+  <button class="nav-item" data-nav="loan"><i class="fas fa-building-columns"></i><span>ঋণ</span></button>
   <button class="nav-item" data-nav="addMember"><i class="fas fa-plus-circle"></i><span>Add</span></button>
 </nav>
 
@@ -614,8 +745,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {
-  getDatabase, ref, push, set, get, child, onValue,
-  runTransaction, serverTimestamp
+  getDatabase, ref, push, set, onValue, runTransaction
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 /* ============ FIREBASE CONFIG ============ */
@@ -634,10 +764,15 @@ const db = getDatabase(app, "https://hot-massage-cf84f-default-rtdb.firebaseio.c
 
 /* ============ STATE ============ */
 const state = {
-  members: {},
-  transactions: {},
+  savingsMembers: {},   // members/savings
+  loanMembers: {},      // members/loans
+  transactions: {       // keyed by `${bookType}/${memberId}`
+    savings: {},
+    loans: {}
+  },
   currentMemberId: null,
-  currentView: "home",
+  currentBookType: null, // 'savings' | 'loan'
+  currentView: "home",   // 'home' | 'savings' | 'loan' | 'book'
   searchQuery: "",
   loading: true,
   offline: false
@@ -693,31 +828,43 @@ function closeModal() {
 }
 
 /* ============ FIREBASE LISTENERS ============ */
-function listenToMembers() {
-  const membersRef = ref(db, "members");
-  onValue(membersRef, (snapshot) => {
-    state.members = snapshot.val() || {};
+function listenToAllMembers() {
+  // Savings members
+  onValue(ref(db, "members/savings"), (snap) => {
+    state.savingsMembers = snap.val() || {};
     state.loading = false;
     state.offline = false;
     renderCurrentView();
-  }, (error) => {
-    console.error("Firebase Read Error:", error.code, error.message);
-    state.offline = true;
+  }, (err) => handleReadError(err));
+
+  // Loan members
+  onValue(ref(db, "members/loans"), (snap) => {
+    state.loanMembers = snap.val() || {};
     state.loading = false;
-    showToast("Firebase Error: " + error.code, "error");
+    state.offline = false;
     renderCurrentView();
-  });
+  }, (err) => handleReadError(err));
 }
 
-function listenToTransactions(memberId) {
-  if (!memberId) return;
-  const txRef = ref(db, `transactions/${memberId}`);
-  onValue(txRef, (snapshot) => {
-    state.transactions[memberId] = snapshot.val() || {};
-    if (state.currentMemberId === memberId) renderBookView(memberId);
-  }, (error) => {
-    console.error("Transaction Read Error:", error.code, error.message);
-    showToast("Firebase Error: " + error.code, "error");
+function handleReadError(error) {
+  console.error("Firebase Read Error:", error.code, error.message);
+  state.offline = true;
+  state.loading = false;
+  showToast("Firebase Error: " + error.code, "error");
+  renderCurrentView();
+}
+
+function listenToTransactions(bookType, memberId) {
+  if (!memberId || !bookType) return;
+  const path = `transactions/${bookType}/${memberId}`;
+  onValue(ref(db, path), (snap) => {
+    state.transactions[bookType][memberId] = snap.val() || {};
+    if (state.currentMemberId === memberId && state.currentBookType === bookType) {
+      renderBookView(bookType, memberId);
+    }
+  }, (err) => {
+    console.error("TX Read Error:", err.code, err.message);
+    showToast("Firebase Error: " + err.code, "error");
   });
 }
 
@@ -729,7 +876,6 @@ function renderCurrentView() {
     main.innerHTML = `<div class="empty-state"><div class="loading-spinner" style="border-top-color:var(--primary);width:32px;height:32px;"></div><p style="margin-top:12px;">লোড হচ্ছে...</p></div>`;
     return;
   }
-
   if (state.offline) {
     main.innerHTML = `<div class="empty-state"><i class="fas fa-wifi"></i><h3>সংযোগ নেই</h3><p>ইন্টারনেট সংযোগ চেক করুন।</p></div>`;
     return;
@@ -737,10 +883,14 @@ function renderCurrentView() {
 
   switch (state.currentView) {
     case "home": renderHome(); break;
-    case "savings": renderSavingsList(); break;
+    case "savings": renderBookList("savings"); break;
+    case "loan": renderBookList("loan"); break;
     case "book":
-      if (state.currentMemberId) renderBookView(state.currentMemberId);
-      else { state.currentView = "savings"; renderSavingsList(); }
+      if (state.currentMemberId && state.currentBookType) {
+        renderBookView(state.currentBookType, state.currentMemberId);
+      } else {
+        state.currentView = "home"; renderHome();
+      }
       break;
     default: renderHome();
   }
@@ -750,57 +900,98 @@ function renderCurrentView() {
 function updateNavActive() {
   document.querySelectorAll("[data-nav]").forEach((el) => {
     const nav = el.dataset.nav;
-    el.classList.toggle("active",
-      nav === state.currentView || (nav === "savings" && state.currentView === "book"));
+    el.classList.remove("active", "loan");
+    if (nav === state.currentView) {
+      el.classList.add("active");
+      if (nav === "loan") el.classList.add("loan");
+    }
+    if (nav === "savings" && state.currentView === "book" && state.currentBookType === "savings") {
+      el.classList.add("active");
+    }
+    if (nav === "loan" && state.currentView === "book" && state.currentBookType === "loan") {
+      el.classList.add("active", "loan");
+    }
   });
 }
 
 /* ============ HOME ============ */
 function renderHome() {
   const main = document.getElementById("mainContent");
-  const members = Object.entries(state.members);
 
-  let totalDeposit = 0, totalWithdraw = 0, totalBalance = 0;
-  members.forEach(([id, m]) => {
-    totalDeposit += m.totalDeposit || 0;
-    totalWithdraw += m.totalWithdraw || 0;
-    totalBalance += m.currentBalance || 0;
+  // Savings stats
+  const savingsArr = Object.entries(state.savingsMembers);
+  let sDeposit = 0, sWithdraw = 0, sBalance = 0;
+  savingsArr.forEach(([id, m]) => {
+    sDeposit += m.totalDeposit || 0;
+    sWithdraw += m.totalWithdraw || 0;
+    sBalance += m.currentBalance || 0;
   });
 
+  // Loan stats
+  const loanArr = Object.entries(state.loanMembers);
+  let lTotalLoan = 0, lPaid = 0, lOutstanding = 0;
+  loanArr.forEach(([id, m]) => {
+    lTotalLoan += m.totalLoan || 0;
+    lPaid += m.totalPaid || 0;
+    lOutstanding += m.outstanding || 0;
+  });
+
+  // Search
   const q = state.searchQuery.toLowerCase().trim();
-  const filtered = q
-    ? members.filter(([id, m]) => (m.name || "").toLowerCase().includes(q))
-    : members;
+  let searchResults = [];
+  if (q) {
+    savingsArr.forEach(([id, m]) => {
+      if ((m.name || "").toLowerCase().includes(q)) searchResults.push({ id, m, book: "savings" });
+    });
+    loanArr.forEach(([id, m]) => {
+      if ((m.name || "").toLowerCase().includes(q)) searchResults.push({ id, m, book: "loan" });
+    });
+  }
 
   main.innerHTML = `
     <div class="search-section">
       <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="সদস্য খুঁজুন..." value="${state.searchQuery}">
+        <input type="text" id="searchInput" placeholder="সদস্য খুঁজুন (Savings + Loan)..." value="${state.searchQuery}">
         ${state.searchQuery ? '<button id="clearSearch" style="background:transparent;color:var(--text-light);padding:10px;"><i class="fas fa-times"></i></button>' : ""}
       </div>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card"><span class="label">মোট সদস্য</span><span class="value">${members.length}</span></div>
-      <div class="stat-card"><span class="label">মোট জমা</span><span class="value" style="color:var(--success);">${formatCurrency(totalDeposit)}</span></div>
-      <div class="stat-card"><span class="label">মোট উত্তোলন</span><span class="value" style="color:var(--danger);">${formatCurrency(totalWithdraw)}</span></div>
-      <div class="stat-card"><span class="label">বর্তমান ব্যালেন্স</span><span class="value">${formatCurrency(totalBalance)}</span></div>
-    </div>
+    ${q ? `
+      <h2 style="font-size:1.1rem;margin-bottom:12px;">অনুসন্ধানের ফলাফল (${searchResults.length})</h2>
+      <div class="member-list">
+        ${searchResults.length === 0 ? `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-search"></i><p>কোনো সদস্য পাওয়া যায়নি।</p></div>` :
+          searchResults.map(r => memberCardHTML(r.book, r.id, r.m)).join("")}
+      </div>
+    ` : `
+      <div class="stats-section-title"><i class="fas fa-coins"></i> 💰 সঞ্চয় সারাংশ</div>
+      <div class="stats-grid">
+        <div class="stat-card"><span class="label">সঞ্চয় সদস্য</span><span class="value">${savingsArr.length}</span></div>
+        <div class="stat-card"><span class="label">মোট জমা</span><span class="value" style="color:var(--success);">${formatCurrency(sDeposit)}</span></div>
+        <div class="stat-card"><span class="label">মোট উত্তোলন</span><span class="value" style="color:var(--danger);">${formatCurrency(sWithdraw)}</span></div>
+        <div class="stat-card"><span class="label">বর্তমান ব্যালেন্স</span><span class="value">${formatCurrency(sBalance)}</span></div>
+      </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <h2 style="font-size:1.1rem;">${q ? "অনুসন্ধানের ফলাফল" : "সদস্য তালিকা"}</h2>
-      <button class="btn btn-primary btn-sm" id="homeAddMemberBtn"><i class="fas fa-plus"></i> নতুন সদস্য</button>
-    </div>
+      <div class="stats-section-title loan"><i class="fas fa-building-columns"></i> 🏦 ঋণ সারাংশ</div>
+      <div class="stats-grid">
+        <div class="stat-card loan"><span class="label">ঋণ সদস্য</span><span class="value">${loanArr.length}</span></div>
+        <div class="stat-card loan"><span class="label">মোট ঋণ</span><span class="value">${formatCurrency(lTotalLoan)}</span></div>
+        <div class="stat-card loan"><span class="label">মোট পরিশোধ</span><span class="value" style="color:var(--success);">${formatCurrency(lPaid)}</span></div>
+        <div class="stat-card loan"><span class="label">বাকি ঋণ</span><span class="value" style="color:var(--danger);">${formatCurrency(lOutstanding)}</span></div>
+      </div>
 
-    <div class="member-list">
-      ${filtered.length === 0 ? `
-        <div class="empty-state" style="grid-column:1/-1;">
-          <i class="fas fa-users"></i>
-          <p>${q ? "কোনো সদস্য পাওয়া যায়নি।" : "এখনো কোনো সদস্য যোগ করা হয়নি।"}</p>
-          ${!q ? '<button class="btn btn-primary mt-2" id="emptyAddBtn"><i class="fas fa-user-plus"></i> প্রথম সদস্য যোগ করুন</button>' : ""}
-        </div>
-      ` : filtered.map(([id, m]) => memberCardHTML(id, m)).join("")}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:24px 0 12px;">
+        <h2 style="font-size:1.1rem;">দ্রুত অ্যাক্সেস</h2>
+        <button class="btn btn-primary btn-sm" id="homeAddMemberBtn"><i class="fas fa-plus"></i> নতুন সদস্য</button>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-primary" data-nav="savings"><i class="fas fa-coins"></i> সঞ্চয় তালিকা</button>
+        <button class="btn btn-loan" data-nav="loan"><i class="fas fa-building-columns"></i> ঋণ তালিকা</button>
+      </div>
+    `}
+
+    <div class="modal-actions" style="justify-content:flex-start;margin-top:20px;">
+      <button class="btn btn-primary" id="homeAddMemberBtn2"><i class="fas fa-user-plus"></i> নতুন সদস্য যোগ করুন</button>
     </div>
   `;
 
@@ -808,20 +999,94 @@ function renderHome() {
   if (si) si.addEventListener("input", (e) => { state.searchQuery = e.target.value; renderHome(); });
   document.getElementById("clearSearch")?.addEventListener("click", () => { state.searchQuery = ""; renderHome(); });
   document.getElementById("homeAddMemberBtn")?.addEventListener("click", openAddMemberModal);
-  document.getElementById("emptyAddBtn")?.addEventListener("click", openAddMemberModal);
+  document.getElementById("homeAddMemberBtn2")?.addEventListener("click", openAddMemberModal);
+
+  // Re-bind quick-access nav
+  main.querySelectorAll("[data-nav]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.currentView = btn.dataset.nav;
+      state.currentMemberId = null;
+      state.currentBookType = null;
+      renderCurrentView();
+    });
+  });
 
   bindMemberCardEvents();
 }
 
-function memberCardHTML(id, m) {
+/* ============ BOOK LIST (savings or loan) ============ */
+function renderBookList(bookType) {
+  const main = document.getElementById("mainContent");
+  const isLoan = bookType === "loan";
+  const members = Object.entries(isLoan ? state.loanMembers : state.savingsMembers);
+
+  const title = isLoan ? "🏦 ঋণ তালিকা" : "💰 সঞ্চয় তালিকা";
+  const addBtn = isLoan
+    ? `<button class="btn btn-loan btn-sm" id="listAddMemberBtn"><i class="fas fa-plus"></i> নতুন ঋণ সদস্য</button>`
+    : `<button class="btn btn-primary btn-sm" id="listAddMemberBtn"><i class="fas fa-plus"></i> নতুন সঞ্চয় সদস্য</button>`;
+
+  main.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-size:1.2rem;">${title}</h2>
+      ${addBtn}
+    </div>
+    <div class="member-list">
+      ${members.length === 0 ? `
+        <div class="empty-state" style="grid-column:1/-1;">
+          <i class="fas ${isLoan ? "fa-building-columns" : "fa-coins"}"></i>
+          <p>${isLoan ? "কোনো ঋণ সদস্য নেই।" : "কোনো সঞ্চয় সদস্য নেই।"}</p>
+        </div>
+      ` : members.map(([id, m]) => memberCardHTML(bookType, id, m)).join("")}
+    </div>
+  `;
+
+  document.getElementById("listAddMemberBtn")?.addEventListener("click", () => openAddMemberModal(bookType));
+  bindMemberCardEvents();
+}
+
+function memberCardHTML(bookType, id, m) {
+  const isLoan = bookType === "loan";
+  const badge = isLoan
+    ? `<span class="member-type-badge badge-loan">🏦 LOAN</span>`
+    : `<span class="member-type-badge badge-savings">💰 SAVINGS</span>`;
+
+  if (isLoan) {
+    const outstanding = m.outstanding || 0;
+    const totalLoan = m.totalLoan || 0;
+    const totalPaid = m.totalPaid || 0;
+    return `
+      <div class="member-card loan" data-member-id="${id}" data-book-type="loan">
+        <div class="member-header">
+          <span class="member-name">${m.name || "নাম নেই"}</span>
+          <span class="member-balance">বাকি ${formatCurrency(outstanding)}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          ${badge}
+        </div>
+        <div class="member-meta">
+          <span>মোট ঋণ: <strong>${formatCurrency(totalLoan)}</strong></span>
+          <span>পরিশোধ: <strong>${formatCurrency(totalPaid)}</strong></span>
+        </div>
+        <div class="member-actions">
+          <button class="btn btn-sm btn-loan" data-action="addLoan" data-member-id="${id}"><i class="fas fa-plus-circle"></i> নতুন ঋণ</button>
+          <button class="btn btn-sm btn-loan-soft" data-action="repay" data-member-id="${id}"><i class="fas fa-hand-holding-dollar"></i> পরিশোধ</button>
+          <button class="btn btn-sm" data-action="open" data-member-id="${id}"><i class="fas fa-book-open"></i> খাতা</button>
+        </div>
+      </div>
+    `;
+  }
+
   const balance = m.currentBalance || 0;
   const deposit = m.totalDeposit || 0;
   const withdraw = m.totalWithdraw || 0;
   return `
-    <div class="member-card" data-member-id="${id}">
+    <div class="member-card savings" data-member-id="${id}" data-book-type="savings">
       <div class="member-header">
         <span class="member-name">${m.name || "নাম নেই"}</span>
         <span class="member-balance">${formatCurrency(balance)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        ${badge}
       </div>
       <div class="member-meta">
         <span>মোট জমা: <strong>${formatCurrency(deposit)}</strong></span>
@@ -840,7 +1105,7 @@ function bindMemberCardEvents() {
   document.querySelectorAll(".member-card").forEach((card) => {
     card.addEventListener("click", (e) => {
       if (e.target.closest(".member-actions")) return;
-      openBook(card.dataset.memberId);
+      openBook(card.dataset.bookType, card.dataset.memberId);
     });
   });
   document.querySelectorAll('[data-action="deposit"]').forEach((btn) => {
@@ -849,162 +1114,245 @@ function bindMemberCardEvents() {
   document.querySelectorAll('[data-action="withdraw"]').forEach((btn) => {
     btn.addEventListener("click", (e) => { e.stopPropagation(); openWithdrawModal(btn.dataset.memberId); });
   });
+  document.querySelectorAll('[data-action="addLoan"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openNewLoanModal(btn.dataset.memberId); });
+  });
+  document.querySelectorAll('[data-action="repay"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openRepayModal(btn.dataset.memberId); });
+  });
   document.querySelectorAll('[data-action="open"]').forEach((btn) => {
-    btn.addEventListener("click", (e) => { e.stopPropagation(); openBook(btn.dataset.memberId); });
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const card = btn.closest(".member-card");
+      openBook(card.dataset.bookType, card.dataset.memberId);
+    });
   });
 }
 
-/* ============ SAVINGS LIST ============ */
-function renderSavingsList() {
+/* ============ BOOK VIEW ============ */
+function renderBookView(bookType, memberId) {
   const main = document.getElementById("mainContent");
-  const members = Object.entries(state.members);
+  const isLoan = bookType === "loan";
+  const member = isLoan ? state.loanMembers[memberId] : state.savingsMembers[memberId];
 
-  main.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <h2 style="font-size:1.2rem;">সঞ্চয় তালিকা</h2>
-      <button class="btn btn-primary btn-sm" id="savingsAddMemberBtn"><i class="fas fa-plus"></i> নতুন সদস্য</button>
-    </div>
-    <div class="member-list">
-      ${members.length === 0 ? `
-        <div class="empty-state" style="grid-column:1/-1;">
-          <i class="fas fa-coins"></i>
-          <p>কোনো সদস্য নেই। প্রথমে সদস্য যোগ করুন।</p>
-        </div>
-      ` : members.map(([id, m]) => memberCardHTML(id, m)).join("")}
-    </div>
-  `;
-  document.getElementById("savingsAddMemberBtn")?.addEventListener("click", openAddMemberModal);
-  bindMemberCardEvents();
-}
-
-/* ============ BOOK VIEW (DIGITAL KHATA) ============ */
-function renderBookView(memberId) {
-  const main = document.getElementById("mainContent");
-  const member = state.members[memberId];
   if (!member) {
     main.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>সদস্য পাওয়া যায়নি।</p></div>`;
     return;
   }
 
-  listenToTransactions(memberId);
+  listenToTransactions(bookType, memberId);
 
-  const txs = state.transactions[memberId] || {};
+  const txs = state.transactions[bookType][memberId] || {};
   const txArray = Object.entries(txs)
     .map(([id, tx]) => ({ id, ...tx }))
     .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); // newest first
 
-  const balance = member.currentBalance || 0;
-  const totalDeposit = member.totalDeposit || 0;
-  const totalWithdraw = member.totalWithdraw || 0;
+  const titleIcon = isLoan ? "🏦" : "💰";
+  const titleBn   = isLoan ? "ঋণ খাতা" : "সঞ্চয় খাতা";
+  const listPath  = isLoan ? "loan" : "savings";
+  const accentCls = isLoan ? "loan" : "";
+
+  let summaryHTML = "";
+  let tableHTML = "";
+
+  if (isLoan) {
+    const totalLoan = member.totalLoan || 0;
+    const totalPaid = member.totalPaid || 0;
+    const outstanding = member.outstanding || 0;
+    summaryHTML = `
+      <div class="khata-member">
+        <div>সদস্যের নাম: <span class="name">${member.name || "—"}</span></div>
+        <div class="balance">বাকি ঋণ: ৳ ${outstanding.toLocaleString("en-IN")}</div>
+      </div>
+      <div class="khata-stats-row">
+        <div class="khata-stat"><div class="lbl">মোট ঋণ</div><div class="val loan">৳ ${totalLoan.toLocaleString("en-IN")}</div></div>
+        <div class="khata-stat"><div class="lbl">মোট পরিশোধ</div><div class="val paid">৳ ${totalPaid.toLocaleString("en-IN")}</div></div>
+        <div class="khata-stat"><div class="lbl">বাকি ঋণ</div><div class="val due">৳ ${outstanding.toLocaleString("en-IN")}</div></div>
+      </div>
+    `;
+    tableHTML = `
+      <table class="khata-table">
+        <thead>
+          <tr>
+            <th>তারিখ</th>
+            <th>বিবরণ</th>
+            <th style="text-align:right;">ঋণ</th>
+            <th style="text-align:right;">পরিশোধ</th>
+            <th style="text-align:right;">বাকি</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${txArray.length === 0 ? `
+            <tr><td colspan="5" class="khata-empty">এখনো কোনো লেনদেন নেই।<br>“নতুন ঋণ” বোতাম চেপে শুরু করুন।</td></tr>
+          ` : txArray.map((tx) => `
+            <tr data-tx-id="${tx.id}">
+              <td class="col-date">${tx.date || "-"}</td>
+              <td class="col-desc">${tx.description || (tx.type === "loan" ? "নতুন ঋণ" : "ঋণ পরিশোধ")}</td>
+              <td class="col-num col-loan">${tx.type === "loan" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
+              <td class="col-num col-paid">${tx.type === "repay" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
+              <td class="col-bal">৳ ${Number(tx.outstandingAfter || 0).toLocaleString("en-IN")}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  } else {
+    const balance = member.currentBalance || 0;
+    const totalDeposit = member.totalDeposit || 0;
+    const totalWithdraw = member.totalWithdraw || 0;
+    summaryHTML = `
+      <div class="khata-member">
+        <div>সদস্যের নাম: <span class="name">${member.name || "—"}</span></div>
+        <div class="balance">বর্তমান স্থিতি: ৳ ${balance.toLocaleString("en-IN")}</div>
+      </div>
+      <div class="khata-stats-row">
+        <div class="khata-stat"><div class="lbl">মোট জমা</div><div class="val">৳ ${totalDeposit.toLocaleString("en-IN")}</div></div>
+        <div class="khata-stat"><div class="lbl">মোট উত্তোলন</div><div class="val due">৳ ${totalWithdraw.toLocaleString("en-IN")}</div></div>
+        <div class="khata-stat"><div class="lbl">বর্তমান স্থিতি</div><div class="val">৳ ${balance.toLocaleString("en-IN")}</div></div>
+      </div>
+    `;
+    tableHTML = `
+      <table class="khata-table">
+        <thead>
+          <tr>
+            <th>তারিখ</th>
+            <th>বিবরণ</th>
+            <th style="text-align:right;">জমা</th>
+            <th style="text-align:right;">উত্তোলন</th>
+            <th style="text-align:right;">স্থিতি</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${txArray.length === 0 ? `
+            <tr><td colspan="5" class="khata-empty">এখনো কোনো লেনদেন নেই।<br>“জমা” বোতাম চেপে শুরু করুন।</td></tr>
+          ` : txArray.map((tx) => `
+            <tr data-tx-id="${tx.id}">
+              <td class="col-date">${tx.date || "-"}</td>
+              <td class="col-desc">${tx.description || (tx.type === "deposit" ? "সঞ্চয়" : "উত্তোলন")}</td>
+              <td class="col-num col-dep">${tx.type === "deposit" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
+              <td class="col-num col-wd">${tx.type === "withdraw" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
+              <td class="col-bal">৳ ${Number(tx.balanceAfter || 0).toLocaleString("en-IN")}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  }
+
+  const actionsHTML = isLoan
+    ? `
+      <button class="btn btn-sm btn-loan" id="bookNewLoanBtn"><i class="fas fa-plus-circle"></i> নতুন ঋণ</button>
+      <button class="btn btn-sm btn-loan-soft" id="bookRepayBtn"><i class="fas fa-hand-holding-dollar"></i> পরিশোধ</button>
+      <button class="btn btn-sm" id="bookPrintBtn"><i class="fas fa-print"></i> প্রিন্ট</button>
+      <button class="btn btn-sm" id="bookBackBtn"><i class="fas fa-arrow-left"></i> ফিরে যান</button>
+    `
+    : `
+      <button class="btn btn-sm btn-accent" id="bookDepositBtn"><i class="fas fa-plus-circle"></i> জমা</button>
+      <button class="btn btn-sm btn-danger" id="bookWithdrawBtn"><i class="fas fa-minus-circle"></i> উত্তোলন</button>
+      <button class="btn btn-sm" id="bookPrintBtn"><i class="fas fa-print"></i> প্রিন্ট</button>
+      <button class="btn btn-sm" id="bookBackBtn"><i class="fas fa-arrow-left"></i> ফিরে যান</button>
+    `;
 
   main.innerHTML = `
     <div class="book-view" id="printableBook">
-      <div class="print-logo">সঞ্চয় খাতা</div>
+      <div class="print-logo">${titleBn}</div>
 
       <div class="book-header no-print">
-        <div class="book-title">
+        <div class="book-title ${accentCls}">
           <div>
-            <h2>${member.name || "নাম নেই"}</h2>
-            <span class="sub">ডিজিটাল সঞ্চয় খাতা · ID: ${memberId.slice(-6).toUpperCase()}</span>
+            <h2>${titleIcon} ${member.name || "নাম নেই"}</h2>
+            <span class="sub">${titleBn} · ID: ${memberId.slice(-6).toUpperCase()}</span>
           </div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn btn-sm btn-accent" id="bookDepositBtn"><i class="fas fa-plus-circle"></i> জমা</button>
-          <button class="btn btn-sm btn-danger" id="bookWithdrawBtn"><i class="fas fa-minus-circle"></i> উত্তোলন</button>
-          <button class="btn btn-sm" id="bookPrintBtn"><i class="fas fa-print"></i> প্রিন্ট</button>
-          <button class="btn btn-sm" id="bookBackBtn"><i class="fas fa-arrow-left"></i> ফিরে যান</button>
+          ${actionsHTML}
         </div>
       </div>
 
-      <div class="khata-page">
-        <div class="khata-title">সঞ্চয় খাতা</div>
-        <div class="khata-sub">Digital Savings Ledger · ${member.createdDate || ""}</div>
-
-        <div class="khata-member">
-          <div>সদস্যের নাম: <span class="name">${member.name || "—"}</span></div>
-          <div class="balance">বর্তমান স্থিতি: ৳ ${balance.toLocaleString("en-IN")}</div>
-        </div>
-
-        <div class="khata-member" style="font-size:0.85rem;color:#7a6a4f;margin-bottom:18px;">
-          <div>মোট জমা: <strong style="color:#1e5e47;">৳ ${totalDeposit.toLocaleString("en-IN")}</strong></div>
-          <div>মোট উত্তোলন: <strong style="color:#a8321f;">৳ ${totalWithdraw.toLocaleString("en-IN")}</strong></div>
-        </div>
-
-        <div class="khata-table-wrap">
-          <table class="khata-table">
-            <thead>
-              <tr>
-                <th>তারিখ</th>
-                <th>বিবরণ</th>
-                <th style="text-align:right;">জমা</th>
-                <th style="text-align:right;">উত্তোলন</th>
-                <th style="text-align:right;">স্থিতি</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${txArray.length === 0 ? `
-                <tr><td colspan="5" class="khata-empty">এখনো কোনো লেনদেন নেই।<br>উপরের “জমা” বোতাম চেপে শুরু করুন।</td></tr>
-              ` : txArray.map((tx) => `
-                <tr data-tx-id="${tx.id}">
-                  <td class="col-date">${tx.date || "-"}</td>
-                  <td class="col-desc">${tx.description || (tx.type === "deposit" ? "সঞ্চয়" : "উত্তোলন")}</td>
-                  <td class="col-dep">${tx.type === "deposit" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
-                  <td class="col-wd">${tx.type === "withdraw" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
-                  <td class="col-bal">৳ ${Number(tx.balanceAfter || 0).toLocaleString("en-IN")}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
+      <div class="khata-page ${accentCls}">
+        <div class="khata-title">${titleBn}</div>
+        <div class="khata-sub">${isLoan ? "Digital Loan Ledger" : "Digital Savings Ledger"} · ${member.createdDate || ""}</div>
+        ${summaryHTML}
+        <div class="khata-table-wrap">${tableHTML}</div>
       </div>
     </div>
   `;
 
-  document.getElementById("bookDepositBtn")?.addEventListener("click", () => openDepositModal(memberId));
-  document.getElementById("bookWithdrawBtn")?.addEventListener("click", () => openWithdrawModal(memberId));
+  // Bind actions
+  if (isLoan) {
+    document.getElementById("bookNewLoanBtn")?.addEventListener("click", () => openNewLoanModal(memberId));
+    document.getElementById("bookRepayBtn")?.addEventListener("click", () => openRepayModal(memberId));
+  } else {
+    document.getElementById("bookDepositBtn")?.addEventListener("click", () => openDepositModal(memberId));
+    document.getElementById("bookWithdrawBtn")?.addEventListener("click", () => openWithdrawModal(memberId));
+  }
   document.getElementById("bookPrintBtn")?.addEventListener("click", () => window.print());
   document.getElementById("bookBackBtn")?.addEventListener("click", () => {
-    state.currentView = "savings";
+    state.currentView = listPath;
     state.currentMemberId = null;
+    state.currentBookType = null;
     renderCurrentView();
   });
 
+  // Clickable rows
   document.querySelectorAll(".khata-table tbody tr[data-tx-id]").forEach((tr) => {
     tr.addEventListener("click", () => {
       const txId = tr.dataset.txId;
-      const tx = (state.transactions[memberId] || {})[txId];
-      if (tx) openTransactionDetailModal(member, tx);
+      const tx = (state.transactions[bookType][memberId] || {})[txId];
+      if (tx) openTransactionDetailModal(bookType, member, tx);
     });
   });
 }
 
-/* ============ TRANSACTION DETAIL MODAL ============ */
-function openTransactionDetailModal(member, tx) {
+/* ============ TX DETAIL MODAL ============ */
+function openTransactionDetailModal(bookType, member, tx) {
   const overlay = document.getElementById("modalOverlay");
   const modal = document.getElementById("modalContent");
-  const isDeposit = tx.type === "deposit";
+  const isLoan = bookType === "loan";
 
-  modal.innerHTML = `
-    <h3 style="display:flex;align-items:center;gap:8px;color:#5b3a12;">
-      <i class="fas fa-receipt"></i> লেনদেনের বিস্তারিত
-    </h3>
-
-    <div style="margin-top:6px;">
+  let rows = "";
+  if (isLoan) {
+    const isNewLoan = tx.type === "loan";
+    rows = `
       <div class="tx-detail-row"><span class="label">সদস্য</span><span class="value">${member.name || "—"}</span></div>
       <div class="tx-detail-row"><span class="label">তারিখ</span><span class="value">${tx.date || "—"}</span></div>
       <div class="tx-detail-row"><span class="label">সময়</span><span class="value">${tx.time || "—"}</span></div>
-      <div class="tx-detail-row"><span class="label">লেনদেন</span><span class="value">${isDeposit ? "জমা" : "উত্তোলন"}</span></div>
+      <div class="tx-detail-row"><span class="label">লেনদেন</span><span class="value">${isNewLoan ? "নতুন ঋণ" : "ঋণ পরিশোধ"}</span></div>
       <div class="tx-detail-row">
-        <span class="label">${isDeposit ? "জমার পরিমাণ" : "উত্তোলনের পরিমাণ"}</span>
-        <span class="value ${isDeposit ? "deposit" : "withdraw"}">৳ ${Number(tx.amount).toLocaleString("en-IN")}</span>
+        <span class="label">পরিমাণ</span>
+        <span class="value ${isNewLoan ? "loan" : "paid"}">৳ ${Number(tx.amount).toLocaleString("en-IN")}</span>
+      </div>
+      <div class="tx-detail-row">
+        <span class="label">লেনদেনের পর বাকি</span>
+        <span class="value">৳ ${Number(tx.outstandingAfter || 0).toLocaleString("en-IN")}</span>
+      </div>
+      <div class="tx-detail-row"><span class="label">বিবরণ</span><span class="value">${tx.description || "—"}</span></div>
+    `;
+  } else {
+    const isDep = tx.type === "deposit";
+    rows = `
+      <div class="tx-detail-row"><span class="label">সদস্য</span><span class="value">${member.name || "—"}</span></div>
+      <div class="tx-detail-row"><span class="label">তারিখ</span><span class="value">${tx.date || "—"}</span></div>
+      <div class="tx-detail-row"><span class="label">সময়</span><span class="value">${tx.time || "—"}</span></div>
+      <div class="tx-detail-row"><span class="label">লেনদেন</span><span class="value">${isDep ? "জমা" : "উত্তোলন"}</span></div>
+      <div class="tx-detail-row">
+        <span class="label">${isDep ? "জমার পরিমাণ" : "উত্তোলনের পরিমাণ"}</span>
+        <span class="value ${isDep ? "deposit" : "withdraw"}">৳ ${Number(tx.amount).toLocaleString("en-IN")}</span>
       </div>
       <div class="tx-detail-row">
         <span class="label">লেনদেনের পর স্থিতি</span>
         <span class="value">৳ ${Number(tx.balanceAfter || 0).toLocaleString("en-IN")}</span>
       </div>
       <div class="tx-detail-row"><span class="label">বিবরণ</span><span class="value">${tx.description || "—"}</span></div>
-    </div>
+    `;
+  }
 
+  modal.innerHTML = `
+    <h3 class="${isLoan ? "loan" : ""}" style="display:flex;align-items:center;gap:8px;">
+      <i class="fas ${isLoan ? "fa-file-invoice-dollar" : "fa-receipt"}"></i>
+      ${isLoan ? "ঋণের বিস্তারিত" : "লেনদেনের বিস্তারিত"}
+    </h3>
+    <div style="margin-top:6px;">${rows}</div>
     <div class="modal-actions">
       <button class="btn btn-primary" id="txDetailClose">বন্ধ করুন</button>
     </div>
@@ -1013,71 +1361,134 @@ function openTransactionDetailModal(member, tx) {
   document.getElementById("txDetailClose").onclick = closeModal;
 }
 
-/* ============ ADD MEMBER ============ */
-function openAddMemberModal() {
+/* ============ ADD MEMBER (2-STEP) ============ */
+function openAddMemberModal(preselectedType) {
   const overlay = document.getElementById("modalOverlay");
   const modal = document.getElementById("modalContent");
 
-  modal.innerHTML = `
-    <h3><i class="fas fa-user-plus" style="color:var(--primary);margin-right:8px;"></i> নতুন সদস্য যোগ করুন</h3>
-    <div class="form-group">
-      <label for="memberNameInput">সদস্যের নাম</label>
-      <input type="text" id="memberNameInput" placeholder="যেমন: রহিম আহমেদ" autocomplete="off">
-    </div>
-    <div class="modal-actions">
-      <button class="btn" id="addMemberCancel">বাতিল</button>
-      <button class="btn btn-primary" id="addMemberSubmit">সংরক্ষণ করুন</button>
-    </div>
-  `;
-  overlay.classList.add("active");
+  let selectedType = preselectedType || null;
 
-  const input = document.getElementById("memberNameInput");
-  input.focus();
-  document.getElementById("addMemberCancel").onclick = closeModal;
-  document.getElementById("addMemberSubmit").onclick = saveNewMember;
-  input.addEventListener("keypress", (e) => { if (e.key === "Enter") saveNewMember(); });
+  function renderStep1() {
+    modal.innerHTML = `
+      <h3><i class="fas fa-user-plus" style="color:var(--primary);margin-right:8px;"></i> নতুন সদস্য যোগ করুন</h3>
+      <p style="margin-bottom:14px;color:var(--text-light);font-size:0.9rem;">বইয়ের ধরন নির্বাচন করুন</p>
+      <div class="book-type-grid">
+        <div class="book-type-option" data-type="savings">
+          <span class="emoji">💰</span>
+          <span class="bn-name">সঞ্চয়</span>
+          <span class="en-name">Savings</span>
+        </div>
+        <div class="book-type-option" data-type="loan">
+          <span class="emoji">🏦</span>
+          <span class="bn-name">ঋণ</span>
+          <span class="en-name">Loan</span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="step1Cancel">বাতিল</button>
+      </div>
+    `;
+    document.getElementById("step1Cancel").onclick = closeModal;
+    modal.querySelectorAll(".book-type-option").forEach((el) => {
+      el.addEventListener("click", () => {
+        selectedType = el.dataset.type;
+        if (selectedType === "savings") el.classList.add("selected-savings");
+        else el.classList.add("selected-loan");
+        setTimeout(renderStep2, 150);
+      });
+    });
+  }
+
+  function renderStep2() {
+    const isLoan = selectedType === "loan";
+    modal.innerHTML = `
+      <h3 class="${isLoan ? "loan" : ""}" style="display:flex;align-items:center;gap:8px;">
+        <i class="fas ${isLoan ? "fa-building-columns" : "fa-coins"}"></i>
+        নতুন ${isLoan ? "ঋণ" : "সঞ্চয়"} সদস্য
+      </h3>
+      <p style="margin-bottom:14px;color:var(--text-light);font-size:0.85rem;">
+        বইয়ের ধরন: <strong>${isLoan ? "🏦 ঋণ (Loan)" : "💰 সঞ্চয় (Savings)"}</strong>
+      </p>
+      <div class="form-group">
+        <label for="memberNameInput">সদস্যের নাম</label>
+        <input type="text" id="memberNameInput" placeholder="যেমন: রহিম আহমেদ" autocomplete="off">
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="step2Back">← পিছনে</button>
+        <button class="btn ${isLoan ? "btn-loan" : "btn-primary"}" id="addMemberSubmit">সংরক্ষণ করুন</button>
+      </div>
+    `;
+    const input = document.getElementById("memberNameInput");
+    input.focus();
+    document.getElementById("step2Back").onclick = renderStep1;
+    document.getElementById("addMemberSubmit").onclick = () => saveNewMember(selectedType, input);
+    input.addEventListener("keypress", (e) => { if (e.key === "Enter") saveNewMember(selectedType, input); });
+  }
+
+  if (preselectedType) { selectedType = preselectedType; renderStep2(); }
+  else renderStep1();
+
+  overlay.classList.add("active");
 }
 
-async function saveNewMember() {
-  const input = document.getElementById("memberNameInput");
+async function saveNewMember(bookType, input) {
   const btn = document.getElementById("addMemberSubmit");
-
   const rawName = (input?.value || "").trim();
   const normalizedName = rawName.toLowerCase().replace(/\s+/g, " ");
 
   if (!rawName) { showToast("সদস্যের নাম লিখুন।", "error"); input.focus(); return; }
 
-  const duplicate = Object.values(state.members || {}).find(
+  const isLoan = bookType === "loan";
+  const collection = isLoan ? state.loanMembers : state.savingsMembers;
+
+  const duplicate = Object.values(collection || {}).find(
     (m) => (m.normalizedName || (m.name || "").toLowerCase().trim()) === normalizedName
   );
-  if (duplicate) { showToast("এই নামে একজন সদস্য ইতিমধ্যে রয়েছে।", "error"); return; }
+  if (duplicate) {
+    showToast(
+      isLoan
+        ? "এই সদস্যের Loan বই ইতিমধ্যে রয়েছে।"
+        : "এই সদস্যের Savings বই ইতিমধ্যে রয়েছে।",
+      "error"
+    );
+    return;
+  }
 
   setLoading(btn, true, "সংরক্ষণ হচ্ছে...");
 
   try {
-    const membersRef = ref(db, "members");
+    const memberPath = isLoan ? "members/loans" : "members/savings";
+    const membersRef = ref(db, memberPath);
     const newMemberRef = push(membersRef);
     const memberId = newMemberRef.key;
 
     const { date } = getDhakaDateTime();
 
-    const memberData = {
+    const base = {
       name: rawName,
       normalizedName,
+      type: bookType,
       createdAt: Date.now(),
-      createdDate: date,
-      currentBalance: 0,
-      totalDeposit: 0,
-      totalWithdraw: 0
+      createdDate: date
     };
 
-    await set(newMemberRef, memberData);
-    await set(ref(db, "transactions/" + memberId), {});
+    const memberData = isLoan
+      ? { ...base, totalLoan: 0, totalPaid: 0, outstanding: 0 }
+      : { ...base, currentBalance: 0, totalDeposit: 0, totalWithdraw: 0 };
 
-    showToast(`সদস্য "${rawName}" সফলভাবে যোগ করা হয়েছে।`, "success");
+    await set(newMemberRef, memberData);
+
+    // Initialize empty transaction node
+    const txPath = isLoan
+      ? `transactions/loans/${memberId}`
+      : `transactions/savings/${memberId}`;
+    await set(ref(db, txPath), {});
+
+    showToast(`সদস্য "${rawName}" (${isLoan ? "ঋণ" : "সঞ্চয়"}) সফলভাবে যোগ করা হয়েছে।`, "success");
     input.value = "";
     closeModal();
-    setTimeout(() => openBook(memberId), 300);
+
+    setTimeout(() => openBook(bookType, memberId), 300);
   } catch (error) {
     console.error("Firebase Error:", error);
     console.error("Error Code:", error.code);
@@ -1088,16 +1499,17 @@ async function saveNewMember() {
   }
 }
 
-function openBook(memberId) {
+function openBook(bookType, memberId) {
   state.currentMemberId = memberId;
+  state.currentBookType = bookType;
   state.currentView = "book";
-  listenToTransactions(memberId);
+  listenToTransactions(bookType, memberId);
   renderCurrentView();
 }
 
-/* ============ DEPOSIT ============ */
+/* ============ SAVINGS: DEPOSIT ============ */
 function openDepositModal(memberId) {
-  const member = state.members[memberId];
+  const member = state.savingsMembers[memberId];
   if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
 
   const overlay = document.getElementById("modalOverlay");
@@ -1132,23 +1544,19 @@ function openDepositModal(memberId) {
     const btn = document.getElementById("depositSubmit");
     setLoading(btn, true, "জমা হচ্ছে...");
     try {
-      await processTransaction(memberId, "deposit", amount, desc);
+      await processSavingsTransaction(memberId, "deposit", amount, desc);
       closeModal();
       showToast(`জমা সফল: +${formatCurrency(amount)}`, "success");
     } catch (error) {
       console.error("Firebase Error:", error);
-      console.error("Error Code:", error.code);
-      console.error("Error Message:", error.message);
       showToast("Firebase Error: " + (error.code || error.message), "error");
-    } finally {
-      setLoading(btn, false);
-    }
+    } finally { setLoading(btn, false); }
   };
 }
 
-/* ============ WITHDRAW ============ */
+/* ============ SAVINGS: WITHDRAW ============ */
 function openWithdrawModal(memberId) {
-  const member = state.members[memberId];
+  const member = state.savingsMembers[memberId];
   if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
 
   const overlay = document.getElementById("modalOverlay");
@@ -1180,29 +1588,24 @@ function openWithdrawModal(memberId) {
     const desc = document.getElementById("withdrawDesc").value.trim() || "উত্তোলন";
     if (!amount || amount <= 0 || isNaN(amount)) { showToast("সঠিক পরিমাণ লিখুন (০ এর বেশি)।", "error"); return; }
 
-    const currentBalance = state.members[memberId]?.currentBalance || 0;
+    const currentBalance = state.savingsMembers[memberId]?.currentBalance || 0;
     if (amount > currentBalance) { showToast("পর্যাপ্ত ব্যালেন্স নেই।", "error"); return; }
 
     const btn = document.getElementById("withdrawSubmit");
     setLoading(btn, true, "উত্তোলন হচ্ছে...");
     try {
-      await processTransaction(memberId, "withdraw", amount, desc);
+      await processSavingsTransaction(memberId, "withdraw", amount, desc);
       closeModal();
       showToast(`উত্তোলন সফল: -${formatCurrency(amount)}`, "success");
     } catch (error) {
       console.error("Firebase Error:", error);
-      console.error("Error Code:", error.code);
-      console.error("Error Message:", error.message);
       showToast("Firebase Error: " + (error.code || error.message), "error");
-    } finally {
-      setLoading(btn, false);
-    }
+    } finally { setLoading(btn, false); }
   };
 }
 
-/* ============ TRANSACTION PROCESS ============ */
-async function processTransaction(memberId, type, amount, description) {
-  const member = state.members[memberId];
+async function processSavingsTransaction(memberId, type, amount, description) {
+  const member = state.savingsMembers[memberId];
   if (!member) throw new Error("সদস্য পাওয়া যায়নি।");
 
   const currentBalance = member.currentBalance || 0;
@@ -1215,8 +1618,7 @@ async function processTransaction(memberId, type, amount, description) {
 
   const { date, time, timestamp } = getDhakaDateTime();
 
-  // Update member totals atomically
-  const memberRef = ref(db, `members/${memberId}`);
+  const memberRef = ref(db, `members/savings/${memberId}`);
   await runTransaction(memberRef, (data) => {
     if (!data) return data;
     if (type === "deposit") {
@@ -1229,35 +1631,182 @@ async function processTransaction(memberId, type, amount, description) {
     return data;
   });
 
-  // Append transaction (never overwritten)
-  const txRef = ref(db, `transactions/${memberId}`);
-  const newTxRef = push(txRef);
-  await set(newTxRef, {
+  const txRef = ref(db, `transactions/savings/${memberId}`);
+  await set(push(txRef), {
     type, amount,
     description: description || (type === "deposit" ? "সঞ্চয়" : "উত্তোলন"),
     date, time, timestamp,
     balanceAfter: newBalance
   });
+  return true;
+}
 
+/* ============ LOAN: NEW LOAN ============ */
+function openNewLoanModal(memberId) {
+  const member = state.loanMembers[memberId];
+  if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
+
+  const overlay = document.getElementById("modalOverlay");
+  const modal = document.getElementById("modalContent");
+
+  modal.innerHTML = `
+    <h3 class="loan"><i class="fas fa-file-invoice-dollar" style="margin-right:8px;"></i> নতুন ঋণ যোগ করুন</h3>
+    <p style="margin-bottom:16px;color:var(--text-light);font-size:0.9rem;">
+      সদস্য: <strong>${member.name}</strong> · বর্তমান বাকি: <strong>${formatCurrency(member.outstanding || 0)}</strong>
+    </p>
+    <div class="form-group">
+      <label for="loanAmount">ঋণের পরিমাণ (৳)</label>
+      <input type="number" id="loanAmount" placeholder="যেমন: ১০০০০" min="1" step="1" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="loanDesc">বিবরণ (ঐচ্ছিক)</label>
+      <input type="text" id="loanDesc" placeholder="যেমন: ব্যবসার জন্য" autocomplete="off">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="loanCancel">বাতিল</button>
+      <button class="btn btn-loan" id="loanSubmit">ঋণ যোগ করুন</button>
+    </div>
+  `;
+  overlay.classList.add("active");
+  document.getElementById("loanAmount").focus();
+  document.getElementById("loanCancel").onclick = closeModal;
+  document.getElementById("loanSubmit").onclick = async () => {
+    const amount = parseFloat(document.getElementById("loanAmount").value);
+    const desc = document.getElementById("loanDesc").value.trim() || "নতুন ঋণ";
+    if (!amount || amount <= 0 || isNaN(amount)) { showToast("সঠিক পরিমাণ লিখুন (০ এর বেশি)।", "error"); return; }
+
+    const btn = document.getElementById("loanSubmit");
+    setLoading(btn, true, "সংরক্ষণ হচ্ছে...");
+    try {
+      await processLoanTransaction(memberId, "loan", amount, desc);
+      closeModal();
+      showToast(`নতুন ঋণ সফল: +${formatCurrency(amount)}`, "success");
+    } catch (error) {
+      console.error("Firebase Error:", error);
+      showToast("Firebase Error: " + (error.code || error.message), "error");
+    } finally { setLoading(btn, false); }
+  };
+}
+
+/* ============ LOAN: REPAY ============ */
+function openRepayModal(memberId) {
+  const member = state.loanMembers[memberId];
+  if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
+
+  const outstanding = member.outstanding || 0;
+  if (outstanding <= 0) {
+    showToast("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।", "info");
+    return;
+  }
+
+  const overlay = document.getElementById("modalOverlay");
+  const modal = document.getElementById("modalContent");
+
+  modal.innerHTML = `
+    <h3 class="loan"><i class="fas fa-hand-holding-dollar" style="margin-right:8px;"></i> ঋণ পরিশোধ</h3>
+    <p style="margin-bottom:16px;color:var(--text-light);font-size:0.9rem;">
+      সদস্য: <strong>${member.name}</strong> · বাকি ঋণ: <strong>${formatCurrency(outstanding)}</strong>
+    </p>
+    <div class="form-group">
+      <label for="repayAmount">পরিশোধের পরিমাণ (৳)</label>
+      <input type="number" id="repayAmount" placeholder="যেমন: ২০০০" min="1" step="1" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="repayDesc">বিবরণ (ঐচ্ছিক)</label>
+      <input type="text" id="repayDesc" placeholder="যেমন: কিস্তি" autocomplete="off">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="repayCancel">বাতিল</button>
+      <button class="btn btn-loan" id="repaySubmit">পরিশোধ করুন</button>
+    </div>
+  `;
+  overlay.classList.add("active");
+  document.getElementById("repayAmount").focus();
+  document.getElementById("repayCancel").onclick = closeModal;
+  document.getElementById("repaySubmit").onclick = async () => {
+    const amount = parseFloat(document.getElementById("repayAmount").value);
+    const desc = document.getElementById("repayDesc").value.trim() || "কিস্তি";
+    if (!amount || amount <= 0 || isNaN(amount)) { showToast("সঠিক পরিমাণ লিখুন (০ এর বেশি)।", "error"); return; }
+
+    const currentOutstanding = state.loanMembers[memberId]?.outstanding || 0;
+    if (currentOutstanding <= 0) { showToast("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।", "error"); return; }
+    if (amount > currentOutstanding) {
+      showToast("পরিশোধের পরিমাণ বাকি ঋণের চেয়ে বেশি হতে পারবে না।", "error");
+      return;
+    }
+
+    const btn = document.getElementById("repaySubmit");
+    setLoading(btn, true, "পরিশোধ হচ্ছে...");
+    try {
+      await processLoanTransaction(memberId, "repay", amount, desc);
+      closeModal();
+      showToast(`পরিশোধ সফল: -${formatCurrency(amount)}`, "success");
+    } catch (error) {
+      console.error("Firebase Error:", error);
+      showToast("Firebase Error: " + (error.code || error.message), "error");
+    } finally { setLoading(btn, false); }
+  };
+}
+
+async function processLoanTransaction(memberId, type, amount, description) {
+  const member = state.loanMembers[memberId];
+  if (!member) throw new Error("সদস্য পাওয়া যায়নি।");
+
+  const totalLoan = member.totalLoan || 0;
+  const totalPaid = member.totalPaid || 0;
+  const outstanding = member.outstanding || 0;
+
+  let newTotalLoan = totalLoan;
+  let newTotalPaid = totalPaid;
+  let newOutstanding = outstanding;
+
+  if (type === "loan") {
+    newTotalLoan = totalLoan + amount;
+    newOutstanding = outstanding + amount;
+  } else { // repay
+    if (outstanding <= 0) throw new Error("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।");
+    if (amount > outstanding) throw new Error("পরিশোধের পরিমাণ বাকি ঋণের চেয়ে বেশি হতে পারবে না।");
+    newTotalPaid = totalPaid + amount;
+    newOutstanding = outstanding - amount;
+  }
+
+  const { date, time, timestamp } = getDhakaDateTime();
+
+  const memberRef = ref(db, `members/loans/${memberId}`);
+  await runTransaction(memberRef, (data) => {
+    if (!data) return data;
+    data.totalLoan = newTotalLoan;
+    data.totalPaid = newTotalPaid;
+    data.outstanding = newOutstanding;
+    return data;
+  });
+
+  const txRef = ref(db, `transactions/loans/${memberId}`);
+  await set(push(txRef), {
+    type,
+    amount,
+    description: description || (type === "loan" ? "নতুন ঋণ" : "ঋণ পরিশোধ"),
+    date, time, timestamp,
+    outstandingAfter: newOutstanding
+  });
   return true;
 }
 
 /* ============ INIT ============ */
 function init() {
-  listenToMembers();
+  listenToAllMembers();
 
-  document.getElementById("headerAddMemberBtn").addEventListener("click", openAddMemberModal);
+  document.getElementById("headerAddMemberBtn").addEventListener("click", () => openAddMemberModal());
 
   document.querySelectorAll("[data-nav]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const view = btn.dataset.nav;
-      if (view === "addMember") openAddMemberModal();
-      else {
-        state.currentView = view;
-        state.currentMemberId = null;
-        state.searchQuery = "";
-        renderCurrentView();
-      }
+      if (view === "addMember") { openAddMemberModal(); return; }
+      state.currentView = view;
+      state.currentMemberId = null;
+      state.currentBookType = null;
+      state.searchQuery = "";
+      renderCurrentView();
     });
   });
 
