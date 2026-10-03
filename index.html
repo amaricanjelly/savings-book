@@ -515,6 +515,66 @@
     .khata-stats-row { grid-template-columns: 1fr; }
     .book-type-grid { grid-template-columns: 1fr; }
   }
+
+  /* ================= KHATA TABLE — TYPE BADGE ================= */
+  .khata-table .col-type { width: 92px; text-align: center; }
+  .type-badge {
+    display: inline-block; font-size: 0.68rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 50px; letter-spacing: 0.3px;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .type-badge.loan    { background: var(--loan-soft); color: var(--loan); border: 1px solid #f1d8c9; }
+  .type-badge.paid    { background: #e6f4ea; color: #2e7d32; border: 1px solid #c6e3ce; }
+  .type-badge.deposit { background: #e6f4ea; color: #1e5e47; border: 1px solid #b8d9c4; }
+  .type-badge.withdraw{ background: #fdecea; color: #a8321f; border: 1px solid #f3c4bc; }
+
+  /* ================= KHATA STAT — status / next payment ================= */
+  .khata-stat .val.status-open     { color: #b22222; }
+  .khata-stat .val.status-progress { color: #b8860b; }
+  .khata-stat .val.status-cleared  { color: #2e7d32; }
+  .khata-stat-wide {
+    grid-column: 1 / -1;
+  }
+
+  /* ================= MOBILE — KHATA TABLE → CARDS ================= */
+  @media (max-width: 560px) {
+    .khata-table-wrap { border: none; background: transparent; overflow: visible; }
+    .khata-table { min-width: 0; width: 100%; display: block; }
+    .khata-table thead { display: none; }
+    .khata-table tbody { display: flex; flex-direction: column; gap: 10px; }
+    .khata-table tbody tr {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        "date    balance"
+        "desc    desc"
+        "type    type"
+        "amt     amt";
+      gap: 6px 10px;
+      background: #fffef9;
+      border: 1px solid #e8dfbf;
+      border-radius: 8px;
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+    .khata-page.loan .khata-table tbody tr { background: #fffaf6; border-color: #ecd4c2; }
+    .khata-table tbody tr:hover { background: #fdf6dd; }
+    .khata-page.loan .khata-table tbody tr:hover { background: #fce8d8; }
+
+    .khata-table tbody td {
+      border: none !important; padding: 0 !important;
+      font-size: 0.85rem; display: block;
+    }
+    .khata-table tbody td.col-date { grid-area: date; color: #7a6a4f; font-size: 0.78rem; }
+    .khata-table tbody td.col-bal  { grid-area: balance; text-align: right; font-weight: 700; color: #5b3a12; }
+    .khata-table tbody td.col-desc { grid-area: desc; color: #3a2f1c; font-weight: 500; }
+    .khata-table tbody td.col-type { grid-area: type; text-align: left; width: auto; }
+    .khata-table tbody td.col-num  { grid-area: amt; text-align: left; font-weight: 700; }
+    .khata-table tbody td.col-num + td.col-num { text-align: right; margin-top: -22px; }
+    .khata-table tbody td .dash { display: none; }
+
+    .khata-empty { padding: 30px 12px; font-size: 0.85rem; }
+  }
 </style>
 </head>
 <body>
@@ -570,7 +630,7 @@ import {
 /* ============================================================
    APP VERSION (bump freely — never triggers any data reset)
    ============================================================ */
-const APP_VERSION = "2.0.0";
+const APP_VERSION = "2.1.0";
 console.log("[সঞ্চয় খাতা] App version:", APP_VERSION);
 
 /* ============================================================
@@ -601,7 +661,8 @@ const db = getDatabase(app, "https://hot-massage-cf84f-default-rtdb.firebaseio.c
        * push() a new transaction under transactions/{savings|loans}/{memberId}
        * runTransaction() to update member totals
        * remove() ONLY on a specific member's node and its transactions
-         after double-confirmation   ============================================================ */
+         after double-confirmation
+   ============================================================ */
 
 /* ============================================================
    STATE
@@ -702,17 +763,47 @@ function handleReadError(error) {
   renderCurrentView();
 }
 
+/* Tracks the single active transaction listener so we never leak listeners
+   when opening/closing member Khatas repeatedly. */
+let _activeTxUnsubscribe = null;
+let _activeTxKey = null;
+
 function listenToTransactions(bookType, memberId) {
   if (!memberId || !bookType) return;
-  onValue(ref(db, `transactions/${bookType}/${memberId}`), (snap) => {
-    state.transactions[bookType][memberId] = snap.val() || {};
-    if (state.currentMemberId === memberId && state.currentBookType === bookType) {
-      renderBookView(bookType, memberId);
+
+  const key = `${bookType}:${memberId}`;
+  // Same member already subscribed — avoid duplicate listeners.
+  if (_activeTxKey === key && typeof _activeTxUnsubscribe === "function") return;
+
+  // Detach previous listener before attaching a new one.
+  if (typeof _activeTxUnsubscribe === "function") {
+    try { _activeTxUnsubscribe(); } catch (e) { /* ignore */ }
+  }
+  _activeTxUnsubscribe = null;
+  _activeTxKey = key;
+
+  _activeTxUnsubscribe = onValue(
+    ref(db, `transactions/${bookType}/${memberId}`),
+    (snap) => {
+      state.transactions[bookType][memberId] = snap.val() || {};
+      if (state.currentMemberId === memberId && state.currentBookType === bookType) {
+        renderBookView(bookType, memberId);
+      }
+    },
+    (err) => {
+      console.error("TX Read Error:", err.code, err.message);
+      showToast("Firebase Error: " + err.code, "error");
     }
-  }, (err) => {
-    console.error("TX Read Error:", err.code, err.message);
-    showToast("Firebase Error: " + err.code, "error");
-  });
+  );
+}
+
+/* Call this whenever we navigate away from a member's Khata. */
+function stopTransactionListener() {
+  if (typeof _activeTxUnsubscribe === "function") {
+    try { _activeTxUnsubscribe(); } catch (e) { /* ignore */ }
+  }
+  _activeTxUnsubscribe = null;
+  _activeTxKey = null;
 }
 
 /* ============================================================
@@ -850,6 +941,7 @@ function renderHome() {
 
   main.querySelectorAll("[data-nav]").forEach((btn) => {
     btn.addEventListener("click", () => {
+      stopTransactionListener();
       state.currentView = btn.dataset.nav;
       state.currentMemberId = null;
       state.currentBookType = null;
@@ -1012,6 +1104,28 @@ function renderBookView(bookType, memberId) {
     const totalLoan = member.totalLoan || 0;
     const totalPaid = member.totalPaid || 0;
     const outstanding = member.outstanding || 0;
+
+    /* -------------------------------------------------------------------
+       LOAN STATUS — derived client-side (no DB field required).
+       If you later add `member.status` or `member.dueDate` in Firebase,
+       prefer those over the derived values below.
+       ------------------------------------------------------------------- */
+    let statusLabel = "—";
+    let statusClass = "";
+    if (totalLoan === 0) { statusLabel = "ঋণ নেই"; statusClass = "status-cleared"; }
+    else if (outstanding <= 0) { statusLabel = "পরিশোধিত"; statusClass = "status-cleared"; }
+    else if (totalPaid > 0)   { statusLabel = "চলমান"; statusClass = "status-progress"; }
+    else                       { statusLabel = "বাকি"; statusClass = "status-open"; }
+
+    /* Next payment / due — prefer member.dueDate if present, else derive
+       from the most recent transaction date (informational only). */
+    const lastTx = txArray[0]; // newest first
+    const nextPaymentLabel = (member.dueDate && String(member.dueDate).trim())
+      ? String(member.dueDate)
+      : (outstanding > 0
+          ? (lastTx && lastTx.date ? `সর্বশেষ লেনদেন: ${lastTx.date}` : "নির্ধারিত নয়")
+          : "—");
+
     summaryHTML = `
       <div class="khata-member">
         <div>সদস্যের নাম: <span class="name">${member.name || "—"}</span></div>
@@ -1021,6 +1135,8 @@ function renderBookView(bookType, memberId) {
         <div class="khata-stat"><div class="lbl">মোট ঋণ</div><div class="val loan">৳ ${totalLoan.toLocaleString("en-IN")}</div></div>
         <div class="khata-stat"><div class="lbl">মোট পরিশোধ</div><div class="val paid">৳ ${totalPaid.toLocaleString("en-IN")}</div></div>
         <div class="khata-stat"><div class="lbl">বাকি ঋণ</div><div class="val due">৳ ${outstanding.toLocaleString("en-IN")}</div></div>
+        <div class="khata-stat"><div class="lbl">ঋণের অবস্থা</div><div class="val ${statusClass}">${statusLabel}</div></div>
+        <div class="khata-stat"><div class="lbl">পরবর্তী পরিশোধ / নির্ধারিত</div><div class="val" style="font-size:0.85rem;">${nextPaymentLabel}</div></div>
       </div>
     `;
     tableHTML = `
@@ -1029,6 +1145,7 @@ function renderBookView(bookType, memberId) {
           <tr>
             <th>তারিখ</th>
             <th>বিবরণ</th>
+            <th>ধরন</th>
             <th style="text-align:right;">ঋণ</th>
             <th style="text-align:right;">পরিশোধ</th>
             <th style="text-align:right;">বাকি</th>
@@ -1036,16 +1153,21 @@ function renderBookView(bookType, memberId) {
         </thead>
         <tbody>
           ${txArray.length === 0 ? `
-            <tr><td colspan="5" class="khata-empty">এখনো কোনো লেনদেন নেই।<br>“নতুন ঋণ” বোতাম চেপে শুরু করুন।</td></tr>
-          ` : txArray.map((tx) => `
+            <tr><td colspan="6" class="khata-empty">এই সদস্যের কোনো লোন লেনদেনের তথ্য নেই।<br>“নতুন ঋণ” বোতাম চেপে শুরু করুন।</td></tr>
+          ` : txArray.map((tx) => {
+            const isNewLoan = tx.type === "loan";
+            const badgeCls = isNewLoan ? "loan" : "paid";
+            const badgeTxt = isNewLoan ? "LOAN" : "PAID";
+            return `
             <tr data-tx-id="${tx.id}">
               <td class="col-date">${tx.date || "-"}</td>
-              <td class="col-desc">${tx.description || (tx.type === "loan" ? "নতুন ঋণ" : "ঋণ পরিশোধ")}</td>
-              <td class="col-num col-loan">${tx.type === "loan" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
-              <td class="col-num col-paid">${tx.type === "repay" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
+              <td class="col-desc">${tx.description || (isNewLoan ? "নতুন ঋণ" : "ঋণ পরিশোধ")}</td>
+              <td class="col-type"><span class="type-badge ${badgeCls}">${badgeTxt}</span></td>
+              <td class="col-num col-loan">${isNewLoan ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
+              <td class="col-num col-paid">${!isNewLoan ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
               <td class="col-bal">৳ ${Number(tx.outstandingAfter || 0).toLocaleString("en-IN")}</td>
             </tr>
-          `).join("")}
+          `}).join("")}
         </tbody>
       </table>
     `;
@@ -1070,6 +1192,7 @@ function renderBookView(bookType, memberId) {
           <tr>
             <th>তারিখ</th>
             <th>বিবরণ</th>
+            <th>ধরন</th>
             <th style="text-align:right;">জমা</th>
             <th style="text-align:right;">উত্তোলন</th>
             <th style="text-align:right;">স্থিতি</th>
@@ -1077,16 +1200,21 @@ function renderBookView(bookType, memberId) {
         </thead>
         <tbody>
           ${txArray.length === 0 ? `
-            <tr><td colspan="5" class="khata-empty">এখনো কোনো লেনদেন নেই।<br>“জমা” বোতাম চেপে শুরু করুন।</td></tr>
-          ` : txArray.map((tx) => `
+            <tr><td colspan="6" class="khata-empty">এই সদস্যের কোনো সঞ্চয় লেনদেনের তথ্য নেই।<br>“জমা” বোতাম চেপে শুরু করুন।</td></tr>
+          ` : txArray.map((tx) => {
+            const isDep = tx.type === "deposit";
+            const badgeCls = isDep ? "deposit" : "withdraw";
+            const badgeTxt = isDep ? "DEPOSIT" : "WITHDRAW";
+            return `
             <tr data-tx-id="${tx.id}">
               <td class="col-date">${tx.date || "-"}</td>
-              <td class="col-desc">${tx.description || (tx.type === "deposit" ? "সঞ্চয়" : "উত্তোলন")}</td>
-              <td class="col-num col-dep">${tx.type === "deposit" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
-              <td class="col-num col-wd">${tx.type === "withdraw" ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
+              <td class="col-desc">${tx.description || (isDep ? "সঞ্চয়" : "উত্তোলন")}</td>
+              <td class="col-type"><span class="type-badge ${badgeCls}">${badgeTxt}</span></td>
+              <td class="col-num col-dep">${isDep ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
+              <td class="col-num col-wd">${!isDep ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
               <td class="col-bal">৳ ${Number(tx.balanceAfter || 0).toLocaleString("en-IN")}</td>
             </tr>
-          `).join("")}
+          `}).join("")}
         </tbody>
       </table>
     `;
@@ -1142,6 +1270,7 @@ function renderBookView(bookType, memberId) {
   }
   document.getElementById("bookPrintBtn")?.addEventListener("click", () => window.print());
   document.getElementById("bookBackBtn")?.addEventListener("click", () => {
+    stopTransactionListener();
     state.currentView = listPath;
     state.currentMemberId = null;
     state.currentBookType = null;
@@ -1171,6 +1300,10 @@ function openTransactionDetailModal(bookType, member, tx) {
   let rows = "";
   if (isLoan) {
     const isNewLoan = tx.type === "loan";
+    const afterOutstanding = Number(tx.outstandingAfter || 0);
+    let txStatus = "বাকি";
+    if (afterOutstanding <= 0) txStatus = "পরিশোধিত";
+    else if (!isNewLoan) txStatus = "চলমান";
     rows = `
       <div class="tx-detail-row"><span class="label">সদস্য</span><span class="value">${member.name || "—"}</span></div>
       <div class="tx-detail-row"><span class="label">তারিখ</span><span class="value">${tx.date || "—"}</span></div>
@@ -1182,8 +1315,9 @@ function openTransactionDetailModal(bookType, member, tx) {
       </div>
       <div class="tx-detail-row">
         <span class="label">লেনদেনের পর বাকি</span>
-        <span class="value">৳ ${Number(tx.outstandingAfter || 0).toLocaleString("en-IN")}</span>
+        <span class="value">৳ ${afterOutstanding.toLocaleString("en-IN")}</span>
       </div>
+      <div class="tx-detail-row"><span class="label">ঋণের অবস্থা</span><span class="value">${txStatus}</span></div>
       <div class="tx-detail-row"><span class="label">বিবরণ</span><span class="value">${tx.description || "—"}</span></div>
     `;
   } else {
@@ -1546,7 +1680,7 @@ function openRepayModal(memberId) {
 
   const outstanding = member.outstanding || 0;
   if (outstanding <= 0) {
-    showToast("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।", "info");
+    showToast("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।", "info");
     return;
   }
 
@@ -1580,9 +1714,9 @@ function openRepayModal(memberId) {
     if (!amount || amount <= 0 || isNaN(amount)) { showToast("সঠিক পরিমাণ লিখুন (০ এর বেশি)।", "error"); return; }
 
     const currentOutstanding = state.loanMembers[memberId]?.outstanding || 0;
-    if (currentOutstanding <= 0) { showToast("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।", "error"); return; }
+    if (currentOutstanding <= 0) { showToast("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।", "error"); return; }
     if (amount > currentOutstanding) {
-      showToast("পরিশোধের পরিমাণ বাকি ঋণের চেয়ে বেশি হতে পারবে না।", "error");
+      showToast("পরিশোধের পরিমাণ বাকি ঋণের চেয়ে বেশি হতে পারবে না।", "error");
       return;
     }
 
@@ -1615,8 +1749,8 @@ async function processLoanTransaction(memberId, type, amount, description) {
     newTotalLoan = totalLoan + amount;
     newOutstanding = outstanding + amount;
   } else { // repay
-    if (outstanding <= 0) throw new Error("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।");
-    if (amount > outstanding) throw new Error("পরিশোধের পরিমাণ বাকি ঋণের চেয়ে বেশি হতে পারবে না।");
+    if (outstanding <= 0) throw new Error("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।");
+    if (amount > outstanding) throw new Error("পরিশোধের পরিমাণ বাকি ঋণের চেয়ে বেশি হতে পারবে না।");
     newTotalPaid = totalPaid + amount;
     newOutstanding = outstanding - amount;
   }
@@ -1711,6 +1845,7 @@ async function performMemberDelete(bookType, memberId) {
 
     // If the deleted member's book was open, go back to its list
     if (state.currentMemberId === memberId && state.currentBookType === bookType) {
+      stopTransactionListener();
       state.currentMemberId = null;
       state.currentBookType = null;
       state.currentView = isLoan ? "loan" : "savings";
@@ -1740,6 +1875,7 @@ function init() {
     btn.addEventListener("click", () => {
       const view = btn.dataset.nav;
       if (view === "addMember") { openAddMemberModal(); return; }
+      stopTransactionListener();
       state.currentView = view;
       state.currentMemberId = null;
       state.currentBookType = null;
