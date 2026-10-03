@@ -536,7 +536,36 @@
     grid-column: 1 / -1;
   }
 
-  /* ================= MOBILE — KHATA TABLE → CARDS ================= */
+  /* ================= LOAN KHATA — 3-COLUMN LIST (Loan | Date | Joma) ================= */
+  .khata-table.loan-3col { min-width: 0; }
+  .khata-table.loan-3col .col-loan-amount { width: 34%; text-align: right; font-weight: 700; color: var(--loan); }
+  .khata-table.loan-3col .col-date-simple  { width: 33%; text-align: center; color: #4a3d22; font-size: 0.85rem; }
+  .khata-table.loan-3col .col-joma         { width: 33%; text-align: right; font-weight: 700; color: #2e7d32; }
+  .khata-table.loan-3col .col-joma.empty   { color: #b8a97a; font-weight: 400; }
+
+  /* Mobile: 3-column rows → compact cards */
+  @media (max-width: 560px) {
+    .khata-table.loan-3col { display: block; }
+    .khata-table.loan-3col thead { display: none; }
+    .khata-table.loan-3col tbody { display: flex; flex-direction: column; gap: 8px; }
+    .khata-table.loan-3col tbody tr {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: "loan date joma";
+      align-items: center;
+      gap: 8px;
+      background: #fffaf6;
+      border: 1px solid #ecd4c2;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .khata-table.loan-3col tbody td { border: none !important; padding: 0 !important; font-size: 0.85rem; }
+    .khata-table.loan-3col tbody td.col-loan-amount { grid-area: loan; text-align: left; width: auto; }
+    .khata-table.loan-3col tbody td.col-date-simple { grid-area: date; text-align: center; width: auto; }
+    .khata-table.loan-3col tbody td.col-joma        { grid-area: joma; text-align: right; width: auto; }
+  }
+
+  /* ================= MOBILE — KHATA TABLE → CARDS (generic) ================= */
   @media (max-width: 560px) {
     .khata-table-wrap { border: none; background: transparent; overflow: visible; }
     .khata-table { min-width: 0; width: 100%; display: block; }
@@ -630,7 +659,7 @@ import {
 /* ============================================================
    APP VERSION (bump freely — never triggers any data reset)
    ============================================================ */
-const APP_VERSION = "2.2.0";
+const APP_VERSION = "2.3.0";
 console.log("[সঞ্চয় খাতা] App version:", APP_VERSION);
 
 /* ============================================================
@@ -1093,18 +1122,9 @@ function renderBookView(bookType, memberId) {
      SORT: OLDEST → NEWEST (ascending chronological).
 
      Primary key   : `timestamp` — the stored numeric ms value.
-                     This is the reliable source of truth and is NOT
-                     affected by locale or display formatting.
      Secondary key : transaction push key (Firebase push IDs are
-                     lexicographically sortable, so they act as a
-                     stable, deterministic tie-breaker when two
-                     records share the same timestamp).
-     Fallback      : if `timestamp` is missing, parse the stored
-                     "dd/mm/yyyy" display date (Dhaka format); if
-                     that too is unavailable, treat as 0 (oldest).
-
-     This ordering applies to BOTH Savings and Loan Khatas so both
-     ledgers read top-to-bottom in the order entries were made.
+                     lexicographically sortable → stable tie-break).
+     Fallback      : parse "dd/mm/yyyy" date if timestamp missing.
      --------------------------------------------------------------- */
   function txSortKey(tx) {
     if (typeof tx.timestamp === "number" && !isNaN(tx.timestamp)) {
@@ -1141,71 +1161,58 @@ function renderBookView(bookType, memberId) {
   let tableHTML = "";
 
   if (isLoan) {
-    const totalLoan = member.totalLoan || 0;
-    const totalPaid = member.totalPaid || 0;
     const outstanding = member.outstanding || 0;
 
-    /* -------------------------------------------------------------------
-       LOAN STATUS — derived client-side (no DB field required).
-       If you later add `member.status` or `member.dueDate` in Firebase,
-       prefer those over the derived values below.
-       ------------------------------------------------------------------- */
-    let statusLabel = "—";
-    let statusClass = "";
-    if (totalLoan === 0) { statusLabel = "ঋণ নেই"; statusClass = "status-cleared"; }
-    else if (outstanding <= 0) { statusLabel = "পরিশোধিত"; statusClass = "status-cleared"; }
-    else if (totalPaid > 0)   { statusLabel = "চলমান"; statusClass = "status-progress"; }
-    else                       { statusLabel = "বাকি"; statusClass = "status-open"; }
-
-    /* Next payment / due — prefer member.dueDate if present, else derive
-       from the most recent transaction date (informational only). */
-    const lastTx = txArray[txArray.length - 1]; // newest (since sorted asc)
-    const nextPaymentLabel = (member.dueDate && String(member.dueDate).trim())
-      ? String(member.dueDate)
-      : (outstanding > 0
-          ? (lastTx && lastTx.date ? `সর্বশেষ লেনদেন: ${lastTx.date}` : "নির্ধারিত নয়")
-          : "—");
-
+    /* Simple header — name + outstanding only (Savings Khata style) */
     summaryHTML = `
       <div class="khata-member">
         <div>সদস্যের নাম: <span class="name">${member.name || "—"}</span></div>
         <div class="balance">বাকি ঋণ: ৳ ${outstanding.toLocaleString("en-IN")}</div>
       </div>
-      <div class="khata-stats-row">
-        <div class="khata-stat"><div class="lbl">মোট ঋণ</div><div class="val loan">৳ ${totalLoan.toLocaleString("en-IN")}</div></div>
-        <div class="khata-stat"><div class="lbl">মোট পরিশোধ</div><div class="val paid">৳ ${totalPaid.toLocaleString("en-IN")}</div></div>
-        <div class="khata-stat"><div class="lbl">বাকি ঋণ</div><div class="val due">৳ ${outstanding.toLocaleString("en-IN")}</div></div>
-        <div class="khata-stat"><div class="lbl">ঋণের অবস্থা</div><div class="val ${statusClass}">${statusLabel}</div></div>
-        <div class="khata-stat"><div class="lbl">পরবর্তী পরিশোধ / নির্ধারিত</div><div class="val" style="font-size:0.85rem;">${nextPaymentLabel}</div></div>
-      </div>
     `;
+
+    /* ------------------------------------------------------------------
+       LOAN KHATA — 3 columns: Loan | Date | Joma
+       ------------------------------------------------------------------
+       - "Loan"  column: for a new loan entry  → loan amount (৳10,000)
+                         for a repayment entry → outstanding AFTER
+                                                  that payment (৳8,000)
+                         (matches the example table in the spec)
+       - "Date"  column: transaction date (existing project format)
+       - "Joma"  column: for a repayment entry → paid amount (৳2,000)
+                         for a new loan entry  → dash
+       Rows sorted OLDEST → NEWEST by timestamp (see txArray above).
+       ------------------------------------------------------------------ */
     tableHTML = `
-      <table class="khata-table">
+      <table class="khata-table loan-3col">
         <thead>
           <tr>
-            <th>তারিখ</th>
-            <th>বিবরণ</th>
-            <th>ধরন</th>
-            <th style="text-align:right;">ঋণ</th>
-            <th style="text-align:right;">পরিশোধ</th>
-            <th style="text-align:right;">বাকি</th>
+            <th style="text-align:right;">Loan</th>
+            <th style="text-align:center;">Date</th>
+            <th style="text-align:right;">Joma</th>
           </tr>
         </thead>
         <tbody>
           ${txArray.length === 0 ? `
-            <tr><td colspan="6" class="khata-empty">এই সদস্যের কোনো লোন লেনদেনের তথ্য নেই।<br>“নতুন ঋণ” বোতাম চেপে শুরু করুন।</td></tr>
+            <tr><td colspan="3" class="khata-empty">এই সদস্যের কোনো লোন লেনদেনের তথ্য নেই।<br>“নতুন ঋণ” বোতাম চেপে শুরু করুন।</td></tr>
           ` : txArray.map((tx) => {
             const isNewLoan = tx.type === "loan";
-            const badgeCls = isNewLoan ? "loan" : "paid";
-            const badgeTxt = isNewLoan ? "LOAN" : "PAID";
+            const amount = Number(tx.amount) || 0;
+            const outstandingAfter = Number(tx.outstandingAfter) || 0;
+
+            const loanColValue = isNewLoan
+              ? "৳ " + amount.toLocaleString("en-IN")
+              : "৳ " + outstandingAfter.toLocaleString("en-IN");
+
+            const jomaHTML = isNewLoan
+              ? '<span class="col-joma empty">—</span>'
+              : "৳ " + amount.toLocaleString("en-IN");
+
             return `
             <tr data-tx-id="${tx.id}">
-              <td class="col-date">${tx.date || "-"}</td>
-              <td class="col-desc">${tx.description || (isNewLoan ? "নতুন ঋণ" : "ঋণ পরিশোধ")}</td>
-              <td class="col-type"><span class="type-badge ${badgeCls}">${badgeTxt}</span></td>
-              <td class="col-num col-loan">${isNewLoan ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
-              <td class="col-num col-paid">${!isNewLoan ? "৳ " + Number(tx.amount).toLocaleString("en-IN") : '<span class="dash">-</span>'}</td>
-              <td class="col-bal">৳ ${Number(tx.outstandingAfter || 0).toLocaleString("en-IN")}</td>
+              <td class="col-loan-amount">${loanColValue}</td>
+              <td class="col-date-simple">${tx.date || "-"}</td>
+              <td class="col-joma">${jomaHTML}</td>
             </tr>
           `}).join("")}
         </tbody>
@@ -1341,9 +1348,6 @@ function openTransactionDetailModal(bookType, member, tx) {
   if (isLoan) {
     const isNewLoan = tx.type === "loan";
     const afterOutstanding = Number(tx.outstandingAfter || 0);
-    let txStatus = "বাকি";
-    if (afterOutstanding <= 0) txStatus = "পরিশোধিত";
-    else if (!isNewLoan) txStatus = "চলমান";
     rows = `
       <div class="tx-detail-row"><span class="label">সদস্য</span><span class="value">${member.name || "—"}</span></div>
       <div class="tx-detail-row"><span class="label">তারিখ</span><span class="value">${tx.date || "—"}</span></div>
@@ -1357,7 +1361,6 @@ function openTransactionDetailModal(bookType, member, tx) {
         <span class="label">লেনদেনের পর বাকি</span>
         <span class="value">৳ ${afterOutstanding.toLocaleString("en-IN")}</span>
       </div>
-      <div class="tx-detail-row"><span class="label">ঋণের অবস্থা</span><span class="value">${txStatus}</span></div>
       <div class="tx-detail-row"><span class="label">বিবরণ</span><span class="value">${tx.description || "—"}</span></div>
     `;
   } else {
