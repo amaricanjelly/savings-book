@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>সঞ্চয় খাতা · Digital Savings Book</title>
+  <!-- Google Fonts for Bengali & English -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ---------- GLOBAL STYLES ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #0f3b2c;
+      --primary-light: #1e5e47;
+      --accent: #d4af37;
+      --accent-soft: #f9eec1;
+      --bg: #f6f8f6;
+      --card: #ffffff;
+      --text: #1a2e28;
+      --text-light: #4f6b62;
+      --border: #e0e8e4;
+      --danger: #b22222;
+      --success: #2e7d32;
+      --shadow: 0 8px 20px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --font-bn: 'Noto Sans Bengali', 'Inter', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-bn);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 70px; /* space for bottom nav on mobile */
+    }
+
+    /* ---------- TYPOGRAPHY ---------- */
+    h1, h2, h3, h4 {
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---------- HEADER ---------- */
+    .app-header {
+      background: var(--card);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      background: var(--primary);
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .logo-text h1 {
+      font-size: 1.3rem;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .logo-text span {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      letter-spacing: 0.3px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ---------- BUTTONS ---------- */
+    .btn {
+      border: none;
+      background: var(--card);
+      color: var(--text);
+      font-family: var(--font-bn);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 10px 16px;
+      border-radius: 50px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .btn i {
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #1e2a26;
+      border: none;
+    }
+
+    .btn-accent:hover {
+      background: #c9a227;
+    }
+
+    .btn-danger {
+      background: #fff0f0;
+      color: var(--danger);
+      border: 1px solid #fdd8d8;
+    }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 0.8rem;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ---------- MAIN LAYOUT ---------- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 16px 30px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* ---------- SEARCH BAR ---------- */
+    .search-section {
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--card);
+      border-radius: 50px;
+      padding: 4px 4px 4px 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    }
+
+    .search-box i {
+      color: var(--text-light);
+      font-size: 1rem;
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      padding: 14px 12px;
+      font-family: var(--font-bn);
+      font-size: 1rem;
+      background: transparent;
+      outline: none;
+      color: var(--text);
+    }
+
+    .search-box input::placeholder {
+      color: #a0b2aa;
+    }
+
+    .search-box button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 20px;
+      font-family: var(--font-bn);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    /* ---------- STATS CARDS ---------- */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-card .label {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .stat-card .value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .stat-card .value small {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--text-light);
+    }
+
+    /* ---------- MEMBER CARDS ---------- */
+    .member-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .member-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: transform 0.1s, box-shadow 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .member-card:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+      transform: translateY(-2px);
+    }
+
+    .member-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .member-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .member-balance {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: #eef6f1;
+      padding: 4px 12px;
+      border-radius: 50px;
+    }
+
+    .member-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      flex-wrap: wrap;
+    }
+
+    .member-meta span strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .member-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    /* ---------- SAVINGS BOOK VIEW ---------- */
+    .book-view {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .book-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px dashed var(--border);
+    }
+
+    .book-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .book-title h2 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .book-title .sub {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .book-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .book-stat {
+      background: #f9fbf9;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .book-stat .label {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+    }
+
+    .book-stat .value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* ---------- TRANSACTION TABLE ---------- */
+    .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 -20px;
+      padding: 0 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      min-width: 600px;
+    }
+
+    th {
+      background: #f0f5f2;
+      color: var(--primary);
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tx-deposit {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .tx-withdraw {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .tx-balance {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-light);
+      background: #f9fbf9;
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--border);
+    }
+
+    .empty-state i {
+      font-size: 2rem;
+      color: var(--border);
+      margin-bottom: 12px;
+    }
+
+    /* ---------- BOTTOM NAV ---------- */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 12px;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.02);
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      font-family: var(--font-bn);
+      font-size: 0.7rem;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 12px;
+      transition: all 0.15s;
+      flex: 1;
+    }
+
+    .nav-item i {
+      font-size: 1.3rem;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      background: #eef6f1;
+      font-weight: 600;
+    }
+
+    /* ---------- MODALS ---------- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.1);
+      transform: translateY(10px);
+      transition: transform 0.2s;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+
+    .modal h3 {
+      margin-bottom: 18px;
+      color: var(--primary);
+      font-size: 1.3rem;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-bn);
+      font-size: 1rem;
+      background: #fafcfb;
+      transition: border 0.15s, box-shadow 0.15s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+    }
+
+    /* ---------- TOASTS ---------- */
+    .toast-container {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      width: 90%;
+      max-width: 400px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #1e2e28;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideUp 0.3s ease;
+      pointer-events: auto;
+      width: fit-content;
+    }
+
+    .toast.success {
+      background: var(--success);
+    }
+
+    .toast.error {
+      background: var(--danger);
+    }
+
+    .toast.info {
+      background: var(--primary-light);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- LOADING ---------- */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ---------- UTILS ---------- */
+    .hidden {
+      display: none !important;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .mt-2 {
+      margin-top: 8px;
+    }
+
+    .mb-2 {
+      margin-bottom: 8px;
+    }
+
+    .flex {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ---------- PRINT STYLES ---------- */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+        font-size: 12pt;
+      }
+      .app-header,
+      .bottom-nav,
+      .member-actions,
+      .btn,
+      .search-section,
+      .stats-grid,
+      .toast-container,
+      .no-print {
+        display: none !important;
+      }
+      .container {
+        max-width: 100%;
+        padding: 0;
+      }
+      .book-view {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+      }
+      .book-header {
+        border-bottom: 2px solid #000;
+      }
+      table {
+        min-width: 100%;
+        font-size: 10pt;
+      }
+      th {
+        background: #eee !important;
+        color: #000 !important;
+      }
+      td, th {
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+      }
+      .print-logo {
+        display: block !important;
+        text-align: center;
+        font-size: 20pt;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+    }
+
+    .print-logo {
+      display: none;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (min-width: 640px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .member-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .book-stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        padding: 24px 24px 40px;
+      }
+      .member-list {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .bottom-nav {
+        display: none;
+      }
+      .app-header {
+        padding: 16px 32px;
+      }
+      .header-actions .btn span {
+        display: inline;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-actions .btn span {
+        display: none;
+      }
+      .header-actions .btn {
+        padding: 10px 12px;
+      }
+      .book-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Desktop top nav (hidden on mobile) */
+    .desktop-nav {
+      display: none;
+      gap: 8px;
+    }
+
+    @media (min-width: 1024px) {
+      .desktop-nav {
+        display: flex;
+      }
+      .bottom-nav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="logo-area">
+      <div class="logo-icon">স</div>
+      <div class="logo-text">
+        <h1>সঞ্চয় খাতা</h1>
+        <span>Digital Savings Book</span>
+      </div>
+    </div>
+    <div class="desktop-nav">
+      <button class="btn btn-sm" data-nav="home"><i class="fas fa-home"></i> <span>Home</span></button>
+      <button class="btn btn-sm" data-nav="savings"><i class="fas fa-coins"></i> <span>সঞ্চয়</span></button>
+      <button class="btn btn-sm" data-nav="addMember"><i class="fas fa-user-plus"></i> <span>Add Member</span></button>
+      <button class="btn btn-sm" data-nav="history"><i class="fas fa-clock-rotate-left"></i> <span>History</span></button>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-accent btn-sm" id="headerAddMemberBtn"><i class="fas fa-user-plus"></i> <span>Add Member</span></button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container" id="mainContent">
+    <!-- Dynamic content will be rendered here -->
+  </main>
+
+  <!-- BOTTOM NAVIGATION (Mobile) -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-nav="home"><i class="fas fa-home"></i><span>Home</span></button>
+    <button class="nav-item" data-nav="savings"><i class="fas fa-coins"></i><span>সঞ্চয়</span></button>
+    <button class="nav-item" data-nav="addMember"><i class="fas fa-plus-circle"></i><span>Add</span></button>
+    <button class="nav-item" data-nav="history"><i class="fas fa-clock-rotate-left"></i><span>History</span></button>
+  </nav>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- MODAL OVERLAY -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+  <!-- FIREBASE SDK -->
+  <script type="module">
+    // ============================================================
+    // FIREBASE CONFIGURATION
+    // ============================================================
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue, get, child, serverTimestamp, runTransaction, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCiUGCxmtpcxlws0r_3SYdA75_PhcogKBA",
+      authDomain: "hot-massage-cf84f.firebaseapp.com",
+      projectId: "hot-massage-cf84f",
+      storageBucket: "hot-massage-cf84f.firebasestorage.app",
+      messagingSenderId: "352387843058",
+      appId: "1:352387843058:web:6617d45c7b12c7dda3e16b",
+      measurementId: "G-EZGQ9MZ6WN"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app, "https://hot-massage-cf84f-default-rtdb.firebaseio.com");
+
+    // ============================================================
+    // APPLICATION STATE
+    // ============================================================
+    const state = {
+      members: {},           // keyed by memberId
+      transactions: {},      // keyed by memberId -> { txId: {...} }
+      currentMemberId: null, // when viewing a savings book
+      currentView: 'home',   // 'home' | 'savings' | 'book' | 'history' | 'addMember'
+      searchQuery: '',
+      loading: true,
+      offline: false
+    };
+
+    // ============================================================
+    // UTILITY FUNCTIONS
+    // ============================================================
+
+    /** Format currency in Bengali/English */
+    function formatCurrency(amount) {
+      const num = Number(amount) || 0;
+      return '৳ ' + num.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+    }
+
+    /** Get current date-time in Asia/Dhaka */
+    function getDhakaDateTime() {
+      const now = new Date();
+      // Use Intl to get Dhaka time
+      const dateStr = now.toLocaleDateString('en-GB', { timeZone: 'Asia/Dhaka', day: '2-digit', month: '2-digit', year: 'numeric' });
+      const timeStr = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Dhaka', hour: '2-digit', minute: '2-digit', hour12: true });
+      return { date: dateStr, time: timeStr, timestamp: now.getTime() };
+    }
+
+    /** Generate a unique ID (Firebase push key is better, but this is for local use) */
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+    }
+
+    /** Show toast notification */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    /** Show confirmation dialog */
+    function confirmAction(message, onConfirm) {
+      const overlay = document.getElementById('modalOverlay');
+      const modal = document.getElementById('modalContent');
+      modal.innerHTML = `
+        <h3>নিশ্চিত করুন</h3>
+        <p style="margin-bottom:20px;color:var(--text-light);">${message}</p>
+        <div class="modal-actions">
+          <button class="btn" id="confirmCancel">বাতিল</button>
+          <button class="btn btn-primary" id="confirmOk">হ্যাঁ, নিশ্চিত</button>
+        </div>
+      `;
+      overlay.classList.add('active');
+      document.getElementById('confirmCancel').onclick = () => overlay.classList.remove('active');
+      document.getElementById('confirmOk').onclick = () => {
+        overlay.classList.remove('active');
+        onConfirm();
+      };
+    }
+
+    /** Show loading state in a button */
+    function setLoading(btn, isLoading) {
+      if (!btn) return;
+      if (isLoading) {
+        btn.dataset.originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="loading-spinner"></span>';
+        btn.disabled = true;
+      } else {
+        btn.innerHTML = btn.dataset.originalText || btn.innerHTML;
+        btn.disabled = false;
+      }
+    }
+
+    /** Close modal */
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    // ============================================================
+    // FIREBASE DATA LISTENERS
+    // ============================================================
+
+    function listenToMembers() {
+      const membersRef = ref(db, 'members');
+      onValue(membersRef, (snapshot) => {
+        state.members = snapshot.val() || {};
+        state.loading = false;
+        state.offline = false;
+        renderCurrentView();
+      }, (error) => {
+        console.error('Firebase read error:', error);
+        state.offline = true;
+        state.loading = false;
+        showToast('ডেটা লোড করা যায়নি। ইন্টারনেট সংযোগ চেক করুন।', 'error');
+        renderCurrentView();
+      });
+    }
+
+    function listenToTransactions(memberId) {
+      if (!memberId) return;
+      const txRef = ref(db, `transactions/${memberId}`);
+      onValue(txRef, (snapshot) => {
+        state.transactions[memberId] = snapshot.val() || {};
+        if (state.currentMemberId === memberId) {
+          renderBookView(memberId);
+        }
+      }, (error) => {
+        console.error('Transaction read error:', error);
+        showToast('লেনদেন লোড করা যায়নি।', 'error');
+      });
+    }
+
+    // ============================================================
+    // RENDER FUNCTIONS
+    // ============================================================
+
+    function renderCurrentView() {
+      const main = document.getElementById('mainContent');
+      if (state.loading) {
+        main.innerHTML = `<div class="empty-state"><div class="loading-spinner" style="border-top-color:var(--primary);width:32px;height:32px;"></div><p style="margin-top:12px;">লোড হচ্ছে...</p></div>`;
+        return;
+      }
+
+      if (state.offline) {
+        main.innerHTML = `<div class="empty-state"><i class="fas fa-wifi"></i><h3>সংযোগ নেই</h3><p>ইন্টারনেট সংযোগ চেক করে আবার চেষ্টা করুন।</p></div>`;
+        return;
+      }
+
+      switch (state.currentView) {
+        case 'home':
+          renderHome();
+          break;
+        case 'savings':
+          renderSavingsList();
+          break;
+        case 'book':
+          if (state.currentMemberId) {
+            renderBookView(state.currentMemberId);
+          } else {
+            state.currentView = 'savings';
+            renderSavingsList();
+          }
+          break;
+        case 'history':
+          renderHistoryView();
+          break;
+        case 'addMember':
+          // Add member modal is handled separately
+          state.currentView = 'home';
+          renderHome();
+          openAddMemberModal();
+          break;
+        default:
+          renderHome();
+      }
+      updateNavActive();
+    }
+
+    function updateNavActive() {
+      document.querySelectorAll('[data-nav]').forEach(el => {
+        const nav = el.dataset.nav;
+        el.classList.toggle('active', nav === state.currentView || (nav === 'savings' && state.currentView === 'book'));
+      });
+    }
+
+    // ---------- HOME VIEW ----------
+    function renderHome() {
+      const main = document.getElementById('mainContent');
+      const members = Object.entries(state.members);
+      
+      // Calculate totals
+      let totalDeposit = 0;
+      let totalWithdraw = 0;
+      let totalBalance = 0;
+      members.forEach(([id, m]) => {
+        totalDeposit += m.totalDeposit || 0;
+        totalWithdraw += m.totalWithdraw || 0;
+        totalBalance += m.currentBalance || 0;
+      });
+
+      // Filter members by search
+      const query = state.searchQuery.toLowerCase().trim();
+      const filtered = query
+        ? members.filter(([id, m]) => m.name && m.name.toLowerCase().includes(query))
+        : members;
+
+      main.innerHTML = `
+        <div class="search-section">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="সদস্য খুঁজুন (নামের অংশ লিখুন)..." value="${state.searchQuery}">
+            ${state.searchQuery ? '<button id="clearSearch" style="background:transparent;color:var(--text-light);padding:10px;"><i class="fas fa-times"></i></button>' : ''}
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="label">মোট সদস্য</span>
+            <span class="value">${members.length}</span>
+          </div>
+          <div class="stat-card">
+            <span class="label">মোট জমা</span>
+            <span class="value" style="color:var(--success);">${formatCurrency(totalDeposit)}</span>
+          </div>
+          <div class="stat-card">
+            <span class="label">মোট উত্তোলন</span>
+            <span class="value" style="color:var(--danger);">${formatCurrency(totalWithdraw)}</span>
+          </div>
+          <div class="stat-card">
+            <span class="label">বর্তমান ব্যালেন্স</span>
+            <span class="value">${formatCurrency(totalBalance)}</span>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 style="font-size:1.1rem;">${query ? 'অনুসন্ধানের ফলাফল' : 'সদস্য তালিকা'}</h2>
+          <button class="btn btn-primary btn-sm" id="homeAddMemberBtn"><i class="fas fa-plus"></i> নতুন সদস্য</button>
+        </div>
+
+        <div class="member-list">
+          ${filtered.length === 0 ? `
+            <div class="empty-state" style="grid-column:1/-1;">
+              <i class="fas fa-users"></i>
+              <p>${query ? 'কোনো সদস্য পাওয়া যায়নি।' : 'এখনো কোনো সদস্য যোগ করা হয়নি।'}</p>
+              ${!query ? '<button class="btn btn-primary mt-2" id="emptyAddBtn"><i class="fas fa-user-plus"></i> প্রথম সদস্য যোগ করুন</button>' : ''}
+            </div>
+          ` : filtered.map(([id, m]) => memberCardHTML(id, m)).join('')}
+        </div>
+      `;
+
+      // Attach events
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          state.searchQuery = e.target.value;
+          renderHome();
+        });
+      }
+      document.getElementById('clearSearch')?.addEventListener('click', () => {
+        state.searchQuery = '';
+        renderHome();
+      });
+      document.getElementById('homeAddMemberBtn')?.addEventListener('click', () => openAddMemberModal());
+      document.getElementById('emptyAddBtn')?.addEventListener('click', () => openAddMemberModal());
+      
+      // Member card clicks
+      document.querySelectorAll('.member-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.member-actions')) return;
+          const id = card.dataset.memberId;
+          openBook(id);
+        });
+      });
+
+      // Action buttons
+      document.querySelectorAll('[data-action="deposit"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openDepositModal(btn.dataset.memberId);
+        });
+      });
+      document.querySelectorAll('[data-action="withdraw"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openWithdrawModal(btn.dataset.memberId);
+        });
+      });
+    }
+
+    function memberCardHTML(id, m) {
+      const balance = m.currentBalance || 0;
+      const deposit = m.totalDeposit || 0;
+      const withdraw = m.totalWithdraw || 0;
+      return `
+        <div class="member-card" data-member-id="${id}">
+          <div class="member-header">
+            <span class="member-name">${m.name || 'নাম নেই'}</span>
+            <span class="member-balance">${formatCurrency(balance)}</span>
+          </div>
+          <div class="member-meta">
+            <span>মোট জমা: <strong>${formatCurrency(deposit)}</strong></span>
+            <span>মোট উত্তোলন: <strong>${formatCurrency(withdraw)}</strong></span>
+          </div>
+          <div class="member-actions">
+            <button class="btn btn-sm btn-accent" data-action="deposit" data-member-id="${id}"><i class="fas fa-plus-circle"></i> জমা</button>
+            <button class="btn btn-sm btn-danger" data-action="withdraw" data-member-id="${id}"><i class="fas fa-minus-circle"></i> উত্তোলন</button>
+            <button class="btn btn-sm" data-action="open" data-member-id="${id}"><i class="fas fa-book-open"></i> খাতা</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---------- SAVINGS LIST VIEW ----------
+    function renderSavingsList() {
+      const main = document.getElementById('mainContent');
+      const members = Object.entries(state.members);
+      main.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 style="font-size:1.2rem;">সঞ্চয় তালিকা</h2>
+          <button class="btn btn-primary btn-sm" id="savingsAddMemberBtn"><i class="fas fa-plus"></i> নতুন সদস্য</button>
+        </div>
+        <div class="member-list">
+          ${members.length === 0 ? `
+            <div class="empty-state" style="grid-column:1/-1;">
+              <i class="fas fa-coins"></i>
+              <p>কোনো সদস্য নেই। প্রথমে সদস্য যোগ করুন।</p>
+            </div>
+          ` : members.map(([id, m]) => memberCardHTML(id, m)).join('')}
+        </div>
+      `;
+      document.getElementById('savingsAddMemberBtn')?.addEventListener('click', () => openAddMemberModal());
+      
+      document.querySelectorAll('.member-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.member-actions')) return;
+          openBook(card.dataset.memberId);
+        });
+      });
+      document.querySelectorAll('[data-action="deposit"]').forEach(btn => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); openDepositModal(btn.dataset.memberId); });
+      });
+      document.querySelectorAll('[data-action="withdraw"]').forEach(btn => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); openWithdrawModal(btn.dataset.memberId); });
+      });
+      document.querySelectorAll('[data-action="open"]').forEach(btn => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); openBook(btn.dataset.memberId); });
+      });
+    }
+
+    // ---------- BOOK VIEW ----------
+    function renderBookView(memberId) {
+      const main = document.getElementById('mainContent');
+      const member = state.members[memberId];
+      if (!member) {
+        main.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>সদস্য পাওয়া যায়নি।</p></div>`;
+        return;
+      }
+      
+      // Listen to transactions for this member
+      listenToTransactions(memberId);
+      
+      const txs = state.transactions[memberId] || {};
+      const txArray = Object.entries(txs)
+        .map(([id, tx]) => ({ id, ...tx }))
+        .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+      
+      const balance = member.currentBalance || 0;
+      const totalDeposit = member.totalDeposit || 0;
+      const totalWithdraw = member.totalWithdraw || 0;
+
+      main.innerHTML = `
+        <div class="book-view" id="printableBook">
+          <div class="print-logo">সঞ্চয় খাতা</div>
+          <div class="book-header">
+            <div class="book-title">
+              <div>
+                <h2>${member.name || 'নাম নেই'}</h2>
+                <span class="sub">সঞ্চয় খাতা · ID: ${memberId.slice(-6).toUpperCase()}</span>
+              </div>
+            </div>
+            <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-sm btn-accent" id="bookDepositBtn"><i class="fas fa-plus-circle"></i> জমা</button>
+              <button class="btn btn-sm btn-danger" id="bookWithdrawBtn"><i class="fas fa-minus-circle"></i> উত্তোলন</button>
+              <button class="btn btn-sm" id="bookPrintBtn"><i class="fas fa-print"></i> প্রিন্ট</button>
+              <button class="btn btn-sm" id="bookBackBtn"><i class="fas fa-arrow-left"></i> ফিরে যান</button>
+            </div>
+          </div>
+
+          <div class="book-stats">
+            <div class="book-stat">
+              <div class="label">বর্তমান ব্যালেন্স</div>
+              <div class="value">${formatCurrency(balance)}</div>
+            </div>
+            <div class="book-stat">
+              <div class="label">মোট জমা</div>
+              <div class="value" style="color:var(--success);">${formatCurrency(totalDeposit)}</div>
+            </div>
+            <div class="book-stat">
+              <div class="label">মোট উত্তোলন</div>
+              <div class="value" style="color:var(--danger);">${formatCurrency(totalWithdraw)}</div>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>তারিখ</th>
+                  <th>বিবরণ</th>
+                  <th>জমা</th>
+                  <th>উত্তোলন</th>
+                  <th>স্থিতি</th>
+                  <th>স্বাক্ষর</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${txArray.length === 0 ? `
+                  <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-light);">কোনো লেনদেন নেই।</td></tr>
+                ` : txArray.map(tx => `
+                  <tr>
+                    <td>${tx.date || '-'}</td>
+                    <td>${tx.description || (tx.type === 'deposit' ? 'জমা' : 'উত্তোলন')}</td>
+                    <td class="tx-deposit">${tx.type === 'deposit' ? formatCurrency(tx.amount) : '-'}</td>
+                    <td class="tx-withdraw">${tx.type === 'withdraw' ? formatCurrency(tx.amount) : '-'}</td>
+                    <td class="tx-balance">${formatCurrency(tx.balanceAfter || 0)}</td>
+                    <td style="color:var(--text-light);font-size:0.8rem;">${tx.time || ''}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      // Events
+      document.getElementById('bookDepositBtn')?.addEventListener('click', () => openDepositModal(memberId));
+      document.getElementById('bookWithdrawBtn')?.addEventListener('click', () => openWithdrawModal(memberId));
+      document.getElementById('bookPrintBtn')?.addEventListener('click', () => window.print());
+      document.getElementById('bookBackBtn')?.addEventListener('click', () => {
+        state.currentView = 'savings';
+        state.currentMemberId = null;
+        renderCurrentView();
+      });
+    }
+
+    // ---------- HISTORY VIEW ----------
+    function renderHistoryView() {
+      const main = document.getElementById('mainContent');
+      const allTx = [];
+      Object.entries(state.members).forEach(([memberId, member]) => {
+        const txs = state.transactions[memberId] || {};
+        Object.entries(txs).forEach(([txId, tx]) => {
+          allTx.push({ memberId, memberName: member.name, txId, ...tx });
+        });
+      });
+      allTx.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+      main.innerHTML = `
+        <h2 style="font-size:1.2rem;margin-bottom:16px;">সামগ্রিক লেনদেন ইতিহাস</h2>
+        <div class="book-view">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>তারিখ</th>
+                  <th>সদস্য</th>
+                  <th>বিবরণ</th>
+                  <th>জমা</th>
+                  <th>উত্তোলন</th>
+                  <th>স্থিতি</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${allTx.length === 0 ? `
+                  <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-light);">কোনো লেনদেন নেই।</td></tr>
+                ` : allTx.map(tx => `
+                  <tr>
+                    <td>${tx.date || '-'}</td>
+                    <td>${tx.memberName || '—'}</td>
+                    <td>${tx.description || (tx.type === 'deposit' ? 'জমা' : 'উত্তোলন')}</td>
+                    <td class="tx-deposit">${tx.type === 'deposit' ? formatCurrency(tx.amount) : '-'}</td>
+                    <td class="tx-withdraw">${tx.type === 'withdraw' ? formatCurrency(tx.amount) : '-'}</td>
+                    <td class="tx-balance">${formatCurrency(tx.balanceAfter || 0)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // ============================================================
+    // MEMBER OPERATIONS
+    // ============================================================
+
+    function openAddMemberModal() {
+      const overlay = document.getElementById('modalOverlay');
+      const modal = document.getElementById('modalContent');
+      modal.innerHTML = `
+        <h3><i class="fas fa-user-plus" style="color:var(--primary);margin-right:8px;"></i> নতুন সদস্য যোগ করুন</h3>
+        <div class="form-group">
+          <label for="memberNameInput">সদস্যের নাম</label>
+          <input type="text" id="memberNameInput" placeholder="যেমন: রহিম আহমেদ" autocomplete="off">
+        </div>
+        <div class="modal-actions">
+          <button class="btn" id="addMemberCancel">বাতিল</button>
+          <button class="btn btn-primary" id="addMemberSubmit">সংরক্ষণ করুন</button>
+        </div>
+      `;
+      overlay.classList.add('active');
+      const input = document.getElementById('memberNameInput');
+      input.focus();
+
+      document.getElementById('addMemberCancel').onclick = closeModal;
+      document.getElementById('addMemberSubmit').onclick = async () => {
+        const name = input.value.trim();
+        if (!name) {
+          showToast('সদস্যের নাম লিখুন।', 'error');
+          input.focus();
+          return;
+        }
+
+        const normalized = name.toLowerCase().replace(/\s+/g, ' ').trim();
+        
+        // Check for duplicates
+        const members = state.members;
+        const duplicate = Object.values(members).find(m => 
+          (m.normalizedName || m.name?.toLowerCase().replace(/\s+/g, ' ').trim()) === normalized
+        );
+        if (duplicate) {
+          showToast('এই নামে একজন সদস্য ইতিমধ্যে রয়েছে।', 'error');
+          return;
+        }
+
+        const btn = document.getElementById('addMemberSubmit');
+        setLoading(btn, true);
+
+        try {
+          const { date, timestamp } = getDhakaDateTime();
+          const membersRef = ref(db, 'members');
+          const newMemberRef = push(membersRef);
+          const memberId = newMemberRef.key;
+          
+          const memberData = {
+            name: name,
+            normalizedName: normalized,
+            createdAt: timestamp,
+            createdDate: date,
+            currentBalance: 0,
+            totalDeposit: 0,
+            totalWithdraw: 0
+          };
+
+          await set(newMemberRef, memberData);
+          // Also set empty transactions node
+          await set(ref(db, `transactions/${memberId}`), {});
+          
+          closeModal();
+          showToast(`সদস্য "${name}" সফলভাবে যোগ করা হয়েছে।`, 'success');
+          
+          // Open the new member's book
+          setTimeout(() => openBook(memberId), 500);
+        } catch (error) {
+          console.error('Add member error:', error);
+          showToast('ডেটা সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।', 'error');
+        } finally {
+          setLoading(btn, false);
+        }
+      };
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') document.getElementById('addMemberSubmit').click();
+      });
+    }
+
+    function openBook(memberId) {
+      state.currentMemberId = memberId;
+      state.currentView = 'book';
+      // Ensure transactions are loaded
+      listenToTransactions(memberId);
+      renderCurrentView();
+    }
+
+    // ============================================================
+    // TRANSACTION OPERATIONS (DEPOSIT & WITHDRAW)
+    // ============================================================
+
+    function openDepositModal(memberId) {
+      const member = state.members[memberId];
+      if (!member) { showToast('সদস্য পাওয়া যায়নি।', 'error'); return; }
+      
+      const overlay = document.getElementById('modalOverlay');
+      const modal = document.getElementById('modalContent');
+      modal.innerHTML = `
+        <h3><i class="fas fa-plus-circle" style="color:var(--success);margin-right:8px;"></i> জমা করুন</h3>
+        <p style="margin-bottom:16px;color:var(--text-light);font-size:0.9rem;">
+          সদস্য: <strong>${member.name}</strong> · বর্তমান ব্যালেন্স: <strong>${formatCurrency(member.currentBalance || 0)}</strong>
+        </p>
+        <div class="form-group">
+          <label for="depositAmount">টাকার পরিমাণ (৳)</label>
+          <input type="number" id="depositAmount" placeholder="যেমন: ৫০০" min="1" step="1" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="depositDesc">বিবরণ (ঐচ্ছিক)</label>
+          <input type="text" id="depositDesc" placeholder="যেমন: মাসিক সঞ্চয়" autocomplete="off">
+        </div>
+        <div class="modal-actions">
+          <button class="btn" id="depositCancel">বাতিল</button>
+          <button class="btn btn-primary" id="depositSubmit">জমা করুন</button>
+        </div>
+      `;
+      overlay.classList.add('active');
+      document.getElementById('depositAmount').focus();
+
+      document.getElementById('depositCancel').onclick = closeModal;
+      document.getElementById('depositSubmit').onclick = async () => {
+        const amount = parseFloat(document.getElementById('depositAmount').value);
+        const desc = document.getElementById('depositDesc').value.trim() || 'সঞ্চয় জমা';
+        
+        if (!amount || amount <= 0 || isNaN(amount)) {
+          showToast('সঠিক পরিমাণ লিখুন (০ এর বেশি)।', 'error');
+          return;
+        }
+
+        const btn = document.getElementById('depositSubmit');
+        setLoading(btn, true);
+
+        try {
+          await processTransaction(memberId, 'deposit', amount, desc);
+          closeModal();
+          showToast(`জমা সফল: +${formatCurrency(amount)}`, 'success');
+        } catch (error) {
+          console.error('Deposit error:', error);
+          showToast(error.message || 'ডেটা সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।', 'error');
+        } finally {
+          setLoading(btn, false);
+        }
+      };
+      document.getElementById('depositAmount').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') document.getElementById('depositSubmit').click();
+      });
+    }
+
+    function openWithdrawModal(memberId) {
+      const member = state.members[memberId];
+      if (!member) { showToast('সদস্য পাওয়া যায়নি।', 'error'); return; }
+      
+      const overlay = document.getElementById('modalOverlay');
+      const modal = document.getElementById('modalContent');
+      modal.innerHTML = `
+        <h3><i class="fas fa-minus-circle" style="color:var(--danger);margin-right:8px;"></i> উত্তোলন করুন</h3>
+        <p style="margin-bottom:16px;color:var(--text-light);font-size:0.9rem;">
+          সদস্য: <strong>${member.name}</strong> · বর্তমান ব্যালেন্স: <strong>${formatCurrency(member.currentBalance || 0)}</strong>
+        </p>
+        <div class="form-group">
+          <label for="withdrawAmount">টাকার পরিমাণ (৳)</label>
+          <input type="number" id="withdrawAmount" placeholder="যেমন: ৫০০" min="1" step="1" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="withdrawDesc">বিবরণ (ঐচ্ছিক)</label>
+          <input type="text" id="withdrawDesc" placeholder="যেমন: উত্তোলন" autocomplete="off">
+        </div>
+        <div class="modal-actions">
+          <button class="btn" id="withdrawCancel">বাতিল</button>
+          <button class="btn btn-danger" id="withdrawSubmit">উত্তোলন করুন</button>
+        </div>
+      `;
+      overlay.classList.add('active');
+      document.getElementById('withdrawAmount').focus();
+
+      document.getElementById('withdrawCancel').onclick = closeModal;
+      document.getElementById('withdrawSubmit').onclick = async () => {
+        const amount = parseFloat(document.getElementById('withdrawAmount').value);
+        const desc = document.getElementById('withdrawDesc').value.trim() || 'উত্তোলন';
+        
+        if (!amount || amount <= 0 || isNaN(amount)) {
+          showToast('সঠিক পরিমাণ লিখুন (০ এর বেশি)।', 'error');
+          return;
+        }
+
+        const currentBalance = state.members[memberId]?.currentBalance || 0;
+        if (amount > currentBalance) {
+          showToast('পর্যাপ্ত ব্যালেন্স নেই।', 'error');
+          return;
+        }
+
+        const btn = document.getElementById('withdrawSubmit');
+        setLoading(btn, true);
+
+        try {
+          await processTransaction(memberId, 'withdraw', amount, desc);
+          closeModal();
+          showToast(`উত্তোলন সফল: -${formatCurrency(amount)}`, 'success');
+        } catch (error) {
+          console.error('Withdraw error:', error);
+          showToast(error.message || 'ডেটা সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।', 'error');
+        } finally {
+          setLoading(btn, false);
+        }
+      };
+      document.getElementById('withdrawAmount').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') document.getElementById('withdrawSubmit').click();
+      });
+    }
+
+    async function processTransaction(memberId, type, amount, description) {
+      const member = state.members[memberId];
+      if (!member) throw new Error('সদস্য পাওয়া যায়নি।');
+
+      const currentBalance = member.currentBalance || 0;
+      let newBalance;
+      
+      if (type === 'deposit') {
+        newBalance = currentBalance + amount;
+      } else {
+        if (amount > currentBalance) {
+          throw new Error('পর্যাপ্ত ব্যালেন্স নেই।');
+        }
+        newBalance = currentBalance - amount;
+      }
+
+      const { date, time, timestamp } = getDhakaDateTime();
+      
+      // Use a transaction to safely update member totals and create transaction record
+      const memberRef = ref(db, `members/${memberId}`);
+      const txRef = ref(db, `transactions/${memberId}`);
+      const newTxRef = push(txRef);
+      
+      // First, update member balances
+      await runTransaction(memberRef, (currentData) => {
+        if (!currentData) return currentData;
+        if (type === 'deposit') {
+          currentData.currentBalance = (currentData.currentBalance || 0) + amount;
+          currentData.totalDeposit = (currentData.totalDeposit || 0) + amount;
+        } else {
+          currentData.currentBalance = (currentData.currentBalance || 0) - amount;
+          currentData.totalWithdraw = (currentData.totalWithdraw || 0) + amount;
+        }
+        return currentData;
+      });
+
+      // Then create the transaction record
+      const txData = {
+        type: type,
+        amount: amount,
+        description: description || (type === 'deposit' ? 'সঞ্চয় জমা' : 'উত্তোলন'),
+        date: date,
+        time: time,
+        timestamp: timestamp,
+        balanceAfter: newBalance
+      };
+
+      await set(newTxRef, txData);
+      
+      // The onValue listeners will update the UI automatically
+      return txData;
+    }
+
+    // ============================================================
+    // NAVIGATION HANDLERS
+    // ============================================================
+
+    function handleNav(view) {
+      state.currentView = view;
+      state.currentMemberId = null;
+      state.searchQuery = '';
+      renderCurrentView();
+    }
+
+    // ============================================================
+    // INITIALIZATION
+    // ============================================================
+
+    function init() {
+      // Start listening to members
+      listenToMembers();
+
+      // Header Add Member button
+      document.getElementById('headerAddMemberBtn').addEventListener('click', () => openAddMemberModal());
+
+      // Navigation
+      document.querySelectorAll('[data-nav]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const view = btn.dataset.nav;
+          if (view === 'addMember') {
+            openAddMemberModal();
+          } else {
+            handleNav(view);
+          }
+        });
+      });
+
+      // Close modal on overlay click
+      document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeModal();
+      });
+
+      // Escape key closes modal
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+
+      // Initial render
+      renderCurrentView();
+    }
+
+    // Start the app
+    init();
+
+    // Expose some functions globally for debugging (optional)
+    window.__savingsBook = { state, renderCurrentView, openBook, openAddMemberModal };
+  </script>
+</body>
+</html>
