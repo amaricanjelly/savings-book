@@ -11,7 +11,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
 <style>
-  /* ================= GLOBAL ================= */
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
@@ -47,7 +46,7 @@
 
   h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.01em; }
 
-  /* ================= HEADER ================= */
+  /* ===== HEADER ===== */
   .app-header {
     background: var(--card);
     padding: 12px 20px;
@@ -55,53 +54,36 @@
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    position: sticky; top: 0; z-index: 100;
     border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-wrap: wrap; gap: 10px;
   }
-
   .logo-area { display: flex; align-items: center; gap: 10px; }
-
   .logo-icon {
-    background: var(--primary);
-    color: #fff;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    font-weight: 700;
+    background: var(--primary); color: #fff;
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 700;
   }
-
   .logo-text h1 { font-size: 1.3rem; color: var(--primary); line-height: 1.2; }
   .logo-text span { font-size: 0.7rem; color: var(--text-light); letter-spacing: 0.3px; }
-
   .desktop-nav { display: none; gap: 8px; }
-  .header-actions { display: flex; gap: 8px; }
+  .header-actions { display: flex; gap: 8px; align-items: center; }
 
-  /* ================= BUTTONS ================= */
+  .user-email {
+    font-size: 0.75rem; color: var(--text-light);
+    max-width: 140px; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ===== BUTTONS ===== */
   .btn {
-    border: none;
-    background: var(--card);
-    color: var(--text);
-    font-family: var(--font-bn);
-    font-weight: 500;
-    font-size: 0.9rem;
-    padding: 10px 16px;
-    border-radius: 50px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.15s ease;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
+    border: none; background: var(--card); color: var(--text);
+    font-family: var(--font-bn); font-weight: 500; font-size: 0.9rem;
+    padding: 10px 16px; border-radius: 50px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; transition: all 0.15s ease;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
     white-space: nowrap;
   }
   .btn i { font-size: 1rem; }
@@ -110,113 +92,96 @@
   .btn-accent { background: var(--accent); color: #1e2a26; border: none; }
   .btn-accent:hover { background: #c9a227; }
   .btn-danger { background: #fff0f0; color: var(--danger); border: 1px solid #fdd8d8; }
+  .btn-danger:hover { background: #ffe3e3; }
   .btn-loan { background: var(--loan); color: #fff; border: none; }
   .btn-loan:hover { background: #6f2f18; }
   .btn-loan-soft { background: var(--loan-soft); color: var(--loan); border: 1px solid #f1d8c9; }
   .btn-sm { padding: 8px 14px; font-size: 0.8rem; }
-  .btn-block { width: 100%; }
   .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-  /* ================= LAYOUT ================= */
+  /* ===== LAYOUT ===== */
   .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 16px 16px 30px;
-    width: 100%;
-    flex: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 16px 16px 30px; width: 100%; flex: 1;
   }
 
-  /* ================= SEARCH ================= */
+  /* ===== LOGIN SCREEN ===== */
+  .login-wrap {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, #0f3b2c 0%, #1e5e47 100%);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 5000; padding: 20px;
+  }
+  .login-wrap.hidden { display: none; }
+  .login-card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 32px 28px; width: 100%; max-width: 400px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+  }
+  .login-logo {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  }
+  .login-logo .logo-icon { width: 48px; height: 48px; font-size: 26px; border-radius: 14px; }
+  .login-logo h1 { color: var(--primary); font-size: 1.4rem; }
+  .login-logo span { color: var(--text-light); font-size: 0.75rem; }
+  .login-card h2 {
+    font-size: 1rem; color: var(--text); margin-bottom: 18px;
+    font-weight: 500;
+  }
+
+  /* ===== SEARCH ===== */
   .search-section { margin-bottom: 20px; }
   .search-box {
-    display: flex;
-    align-items: center;
-    background: var(--card);
-    border-radius: 50px;
-    padding: 4px 4px 4px 18px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
+    display: flex; align-items: center; background: var(--card);
+    border-radius: 50px; padding: 4px 4px 4px 18px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
     transition: all 0.2s;
   }
   .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(212,175,55,0.15); }
   .search-box i { color: var(--text-light); font-size: 1rem; }
   .search-box input {
-    flex: 1;
-    border: none;
-    padding: 14px 12px;
-    font-family: var(--font-bn);
-    font-size: 1rem;
-    background: transparent;
-    outline: none;
-    color: var(--text);
+    flex: 1; border: none; padding: 14px 12px;
+    font-family: var(--font-bn); font-size: 1rem;
+    background: transparent; outline: none; color: var(--text);
   }
   .search-box input::placeholder { color: #a0b2aa; }
   .search-box button {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    padding: 10px 20px;
-    font-family: var(--font-bn);
-    font-weight: 500;
-    cursor: pointer;
+    background: var(--primary); color: #fff; border: none;
+    border-radius: 50px; padding: 10px 20px;
+    font-family: var(--font-bn); font-weight: 500; cursor: pointer;
   }
 
-  /* ================= STATS ================= */
+  /* ===== STATS ===== */
   .stats-section-title {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-light);
-    font-weight: 700;
-    margin: 18px 0 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--text-light); font-weight: 700;
+    margin: 18px 0 8px; display: flex; align-items: center; gap: 8px;
   }
   .stats-section-title.loan { color: var(--loan); }
-
   .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 8px;
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 12px; margin-bottom: 8px;
   }
   .stat-card {
-    background: var(--card);
-    border-radius: var(--radius-sm);
-    padding: 16px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    background: var(--card); border-radius: var(--radius-sm); padding: 16px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
   }
   .stat-card.loan { border-color: #f1d8c9; }
   .stat-card .label {
-    font-size: 0.75rem;
-    color: var(--text-light);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    font-size: 0.75rem; color: var(--text-light); font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.3px;
   }
   .stat-card .value { font-size: 1.4rem; font-weight: 700; color: var(--primary); line-height: 1.2; }
   .stat-card.loan .value { color: var(--loan); }
 
-  /* ================= MEMBER CARDS ================= */
+  /* ===== MEMBER CARDS ===== */
   .member-list { display: flex; flex-direction: column; gap: 14px; }
-
   .member-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 18px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    transition: transform 0.1s, box-shadow 0.2s;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    background: var(--card); border-radius: var(--radius); padding: 18px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform 0.1s, box-shadow 0.2s; cursor: pointer;
+    display: flex; flex-direction: column; gap: 12px;
   }
   .member-card.loan { border-left: 4px solid var(--loan); }
   .member-card.savings { border-left: 4px solid var(--primary); }
@@ -226,198 +191,130 @@
   .member-name { font-size: 1.1rem; font-weight: 600; color: var(--primary); }
   .member-card.loan .member-name { color: var(--loan); }
   .member-balance {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--primary);
-    background: #eef6f1;
-    padding: 4px 12px;
-    border-radius: 50px;
+    font-size: 1.1rem; font-weight: 700; color: var(--primary);
+    background: #eef6f1; padding: 4px 12px; border-radius: 50px;
     white-space: nowrap;
   }
   .member-card.loan .member-balance { color: var(--loan); background: var(--loan-soft); }
+
   .member-type-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 50px;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.7rem; font-weight: 700; padding: 3px 10px;
+    border-radius: 50px; text-transform: uppercase; letter-spacing: 0.4px;
   }
   .badge-savings { background: #eef6f1; color: var(--primary); }
   .badge-loan { background: var(--loan-soft); color: var(--loan); }
 
   .member-meta {
-    display: flex;
-    gap: 16px;
-    font-size: 0.85rem;
-    color: var(--text-light);
-    flex-wrap: wrap;
+    display: flex; gap: 16px; font-size: 0.85rem;
+    color: var(--text-light); flex-wrap: wrap;
   }
   .member-meta span strong { color: var(--text); font-weight: 600; }
   .member-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+    border-top: 1px solid var(--border); padding-top: 12px;
   }
 
-  /* ================= BOOK VIEW ================= */
+  /* ===== BOOK VIEW ===== */
   .book-view {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    margin-bottom: 20px;
+    background: var(--card); border-radius: var(--radius); padding: 20px;
+    box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px;
   }
-
   .book-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 2px dashed var(--border);
+    display: flex; flex-wrap: wrap; align-items: center;
+    justify-content: space-between; gap: 12px; margin-bottom: 20px;
+    padding-bottom: 16px; border-bottom: 2px dashed var(--border);
   }
   .book-title h2 { font-size: 1.4rem; color: var(--primary); line-height: 1.2; }
   .book-title.loan h2 { color: var(--loan); }
   .book-title .sub { font-size: 0.8rem; color: var(--text-light); }
 
-  /* ================= DIGITAL KHATA ================= */
+  /* ===== KHATA ===== */
   .khata-page {
-    background: #fdfcf7;
-    border: 1px solid #e3ddc9;
-    border-radius: 8px;
-    padding: 18px 14px 24px;
+    background: #fdfcf7; border: 1px solid #e3ddc9;
+    border-radius: 8px; padding: 18px 14px 24px;
     box-shadow: 0 1px 0 #fff inset, 0 6px 24px rgba(0,0,0,0.05);
     background-image: linear-gradient(to bottom, rgba(180,160,110,0.06) 1px, transparent 1px);
     background-size: 100% 34px;
   }
   .khata-page.loan {
-    background: #fdf7f2;
-    border-color: #ecd4c2;
+    background: #fdf7f2; border-color: #ecd4c2;
     background-image: linear-gradient(to bottom, rgba(160,90,60,0.06) 1px, transparent 1px);
   }
-
   .khata-title {
-    text-align: center;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #5b3a12;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    text-align: center; font-size: 1.4rem; font-weight: 700;
+    color: #5b3a12; letter-spacing: 0.5px; margin-bottom: 4px;
   }
   .khata-page.loan .khata-title { color: var(--loan); }
 
   .khata-sub {
-    text-align: center;
-    font-size: 0.85rem;
-    color: #7a6a4f;
-    margin-bottom: 16px;
-    border-bottom: 1px dashed #cbbf9c;
-    padding-bottom: 12px;
+    text-align: center; font-size: 0.85rem; color: #7a6a4f;
+    margin-bottom: 16px; border-bottom: 1px dashed #cbbf9c; padding-bottom: 12px;
   }
   .khata-page.loan .khata-sub { color: #8a6a4f; border-bottom-color: #e0c8b4; }
 
   .khata-member {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 14px;
-    font-size: 0.95rem;
-    color: #3a2f1c;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+    font-size: 0.95rem; color: #3a2f1c;
   }
   .khata-member .name { font-weight: 700; color: #5b3a12; }
   .khata-page.loan .khata-member .name { color: var(--loan); }
 
   .khata-member .balance {
-    font-weight: 700;
-    color: #1e5e47;
-    background: #eaf5ee;
-    padding: 4px 12px;
-    border-radius: 4px;
-    border: 1px solid #b8d9c4;
+    font-weight: 700; color: #1e5e47; background: #eaf5ee;
+    padding: 4px 12px; border-radius: 4px; border: 1px solid #b8d9c4;
   }
   .khata-page.loan .khata-member .balance {
-    color: var(--loan);
-    background: var(--loan-soft);
-    border-color: #f1d8c9;
+    color: var(--loan); background: var(--loan-soft); border-color: #f1d8c9;
   }
 
   .khata-stats-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 18px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 18px;
   }
   .khata-stat {
-    padding: 8px 10px;
-    background: #fffef9;
-    border: 1px solid #e8dfbf;
-    border-radius: 6px;
-    text-align: center;
+    padding: 8px 10px; background: #fffef9;
+    border: 1px solid #e8dfbf; border-radius: 6px; text-align: center;
   }
   .khata-page.loan .khata-stat { background: #fffaf6; border-color: #ecd4c2; }
-  .khata-stat .lbl { font-size: 0.7rem; color: #7a6a4f; text-transform: uppercase; letter-spacing: 0.3px; }
+  .khata-stat .lbl {
+    font-size: 0.7rem; color: #7a6a4f;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
   .khata-stat .val { font-size: 1rem; font-weight: 700; color: #1e5e47; margin-top: 2px; }
   .khata-stat .val.loan { color: var(--loan); }
   .khata-stat .val.paid { color: #2e7d32; }
   .khata-stat .val.due  { color: #b22222; }
 
   .khata-table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid #cbbf9c;
-    border-radius: 4px;
-    background: #fffef9;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    border: 1px solid #cbbf9c; border-radius: 4px; background: #fffef9;
   }
   .khata-page.loan .khata-table-wrap { border-color: #e0c8b4; background: #fffaf6; }
 
   .khata-table {
-    width: 100%;
-    min-width: 620px;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-    color: #2b2418;
+    width: 100%; min-width: 620px; border-collapse: collapse;
+    font-size: 0.9rem; color: #2b2418;
   }
   .khata-table thead th {
-    background: #f0e8cf;
-    color: #5b3a12;
-    font-weight: 700;
-    font-size: 0.82rem;
-    letter-spacing: 0.3px;
-    padding: 9px 10px;
-    text-align: left;
-    border-bottom: 2px solid #cbbf9c;
-    border-right: 1px solid #dcd3b5;
-    white-space: nowrap;
+    background: #f0e8cf; color: #5b3a12; font-weight: 700;
+    font-size: 0.82rem; letter-spacing: 0.3px; padding: 9px 10px;
+    text-align: left; border-bottom: 2px solid #cbbf9c;
+    border-right: 1px solid #dcd3b5; white-space: nowrap;
   }
   .khata-page.loan .khata-table thead th {
-    background: #f5e2d3;
-    color: var(--loan);
-    border-bottom-color: #e0c8b4;
-    border-right-color: #ecd4c2;
+    background: #f5e2d3; color: var(--loan);
+    border-bottom-color: #e0c8b4; border-right-color: #ecd4c2;
   }
   .khata-table thead th:last-child { border-right: none; }
 
   .khata-table tbody td {
-    padding: 9px 10px;
-    border-bottom: 1px solid #ece5cf;
-    border-right: 1px solid #f2ecd8;
-    vertical-align: middle;
-    font-size: 0.88rem;
+    padding: 9px 10px; border-bottom: 1px solid #ece5cf;
+    border-right: 1px solid #f2ecd8; vertical-align: middle; font-size: 0.88rem;
   }
   .khata-page.loan .khata-table tbody td {
-    border-bottom-color: #f1e0d0;
-    border-right-color: #f6e8db;
+    border-bottom-color: #f1e0d0; border-right-color: #f6e8db;
   }
   .khata-table tbody td:last-child { border-right: none; }
   .khata-table tbody tr { cursor: pointer; transition: background 0.12s; }
@@ -436,23 +333,16 @@
   .khata-table .dash { color: #b8a97a; }
 
   .khata-empty {
-    text-align: center;
-    padding: 40px 16px;
-    color: #9a8a68;
-    font-size: 0.9rem;
+    text-align: center; padding: 40px 16px;
+    color: #9a8a68; font-size: 0.9rem;
     background: repeating-linear-gradient(to bottom, transparent 0, transparent 33px, rgba(180,160,110,0.15) 33px, rgba(180,160,110,0.15) 34px);
     border-radius: 4px;
   }
 
-  /* ================= TX DETAIL ================= */
+  /* ===== TX DETAIL ===== */
   .tx-detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px dashed #e6ddc2;
-    font-size: 0.95rem;
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; padding: 10px 0; border-bottom: 1px dashed #e6ddc2; font-size: 0.95rem;
   }
   .tx-detail-row:last-child { border-bottom: none; }
   .tx-detail-row .label { color: #7a6a4f; font-size: 0.82rem; }
@@ -462,32 +352,23 @@
   .tx-detail-row .value.loan { color: var(--loan); }
   .tx-detail-row .value.paid { color: #2e7d32; }
 
-  /* ================= EMPTY STATE ================= */
+  /* ===== EMPTY STATE ===== */
   .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-light);
-    background: #f9fbf9;
-    border-radius: var(--radius-sm);
+    text-align: center; padding: 40px 20px; color: var(--text-light);
+    background: #f9fbf9; border-radius: var(--radius-sm);
     border: 1px dashed var(--border);
   }
   .empty-state i { font-size: 2rem; color: var(--border); margin-bottom: 12px; }
 
-  /* ================= BOOK TYPE CHOOSER ================= */
+  /* ===== BOOK TYPE CHOOSER ===== */
   .book-type-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 16px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-bottom: 16px;
   }
   .book-type-option {
-    background: #f9fbf9;
-    border: 2px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 18px 14px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.15s;
+    background: #f9fbf9; border: 2px solid var(--border);
+    border-radius: var(--radius-sm); padding: 18px 14px;
+    cursor: pointer; text-align: center; transition: all 0.15s;
     font-family: var(--font-bn);
   }
   .book-type-option:hover { transform: translateY(-2px); }
@@ -495,141 +376,91 @@
   .book-type-option .bn-name { font-weight: 700; font-size: 1rem; display: block; }
   .book-type-option .en-name { font-size: 0.75rem; color: var(--text-light); display: block; margin-top: 2px; }
   .book-type-option.selected-savings {
-    background: #eef6f1;
-    border-color: var(--primary);
+    background: #eef6f1; border-color: var(--primary);
     box-shadow: 0 6px 16px rgba(15,59,44,0.12);
   }
   .book-type-option.selected-loan {
-    background: var(--loan-soft);
-    border-color: var(--loan);
+    background: var(--loan-soft); border-color: var(--loan);
     box-shadow: 0 6px 16px rgba(138,59,31,0.12);
   }
 
-  /* ================= BOTTOM NAV ================= */
+  /* ===== BOTTOM NAV ===== */
   .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--card);
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-around;
-    padding: 8px 12px;
-    box-shadow: 0 -4px 12px rgba(0,0,0,0.02);
-    z-index: 100;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--card); border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around; padding: 8px 12px;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.02); z-index: 100;
   }
   .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    background: none;
-    border: none;
-    font-family: var(--font-bn);
-    font-size: 0.7rem;
-    color: var(--text-light);
-    cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 12px;
-    transition: all 0.15s;
-    flex: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: none; border: none; font-family: var(--font-bn);
+    font-size: 0.7rem; color: var(--text-light); cursor: pointer;
+    padding: 6px 12px; border-radius: 12px; transition: all 0.15s; flex: 1;
   }
   .nav-item i { font-size: 1.3rem; }
   .nav-item.active { color: var(--primary); background: #eef6f1; font-weight: 600; }
   .nav-item.active.loan { color: var(--loan); background: var(--loan-soft); }
 
-  /* ================= MODALS ================= */
+  /* ===== MODALS ===== */
   .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(2px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 16px;
-    opacity: 0;
-    visibility: hidden;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(2px); display: flex; align-items: center;
+    justify-content: center; z-index: 1000; padding: 16px;
+    opacity: 0; visibility: hidden;
     transition: opacity 0.2s, visibility 0.2s;
   }
   .modal-overlay.active { opacity: 1; visibility: visible; }
-
   .modal {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 24px;
-    width: 100%;
-    max-width: 460px;
+    background: var(--card); border-radius: var(--radius); padding: 24px;
+    width: 100%; max-width: 460px;
     box-shadow: 0 24px 48px rgba(0,0,0,0.1);
-    transform: translateY(10px);
-    transition: transform 0.2s;
-    max-height: 90vh;
-    overflow-y: auto;
+    transform: translateY(10px); transition: transform 0.2s;
+    max-height: 90vh; overflow-y: auto;
   }
   .modal-overlay.active .modal { transform: translateY(0); }
   .modal h3 { margin-bottom: 18px; color: var(--primary); font-size: 1.3rem; }
   .modal h3.loan { color: var(--loan); }
+  .modal h3.danger { color: var(--danger); }
 
   .form-group { margin-bottom: 16px; }
   .form-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    color: var(--text);
+    display: block; margin-bottom: 6px;
+    font-weight: 500; font-size: 0.9rem; color: var(--text);
   }
-  .form-group input,
-  .form-group textarea {
-    width: 100%;
-    padding: 14px 16px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-family: var(--font-bn);
-    font-size: 1rem;
-    background: #fafcfb;
-    transition: border 0.15s, box-shadow 0.15s;
+  .form-group input, .form-group textarea {
+    width: 100%; padding: 14px 16px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-family: var(--font-bn); font-size: 1rem;
+    background: #fafcfb; transition: border 0.15s, box-shadow 0.15s;
   }
-  .form-group input:focus,
-  .form-group textarea:focus {
-    outline: none;
-    border-color: var(--accent);
+  .form-group input:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
   }
-
   .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
   .modal-actions .btn { flex: 1; }
 
-  /* ================= TOAST ================= */
+  .danger-box {
+    background: #fff5f5; border: 1px solid #fdd8d8;
+    border-radius: var(--radius-sm); padding: 14px;
+    margin-bottom: 12px; font-size: 0.9rem; color: #5a2020;
+  }
+  .danger-box strong { color: var(--danger); }
+
+  /* ===== TOAST ===== */
   .toast-container {
-    position: fixed;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-    width: 90%;
-    max-width: 400px;
-    pointer-events: none;
+    position: fixed; bottom: 80px; left: 50%;
+    transform: translateX(-50%); z-index: 2000;
+    display: flex; flex-direction: column; gap: 8px;
+    align-items: center; width: 90%; max-width: 400px; pointer-events: none;
   }
   .toast {
-    background: #1e2e28;
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 50px;
-    font-size: 0.9rem;
+    background: #1e2e28; color: #fff; padding: 12px 20px;
+    border-radius: 50px; font-size: 0.9rem;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: slideUp 0.3s ease;
-    pointer-events: auto;
-    width: fit-content;
-    max-width: 100%;
+    display: flex; align-items: center; gap: 10px;
+    animation: slideUp 0.3s ease; pointer-events: auto;
+    width: fit-content; max-width: 100%;
   }
   .toast.success { background: var(--success); }
   .toast.error { background: var(--danger); }
@@ -639,33 +470,26 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ================= LOADING ================= */
   .loading-spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 0.8s linear infinite;
+    display: inline-block; width: 20px; height: 20px;
+    border: 3px solid rgba(255,255,255,0.3); border-radius: 50%;
+    border-top-color: #fff; animation: spin 0.8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-
   .hidden { display: none !important; }
   .mt-2 { margin-top: 8px; }
 
-  /* ================= PRINT ================= */
+  /* ===== PRINT ===== */
   @media print {
     body { background: #fff; padding: 0; font-size: 12pt; }
-    .app-header, .bottom-nav, .book-header, .btn, .search-section,
-    .stats-grid, .stats-section-title, .toast-container, .no-print { display: none !important; }
+    .app-header, .bottom-nav, .book-header, .btn,
+    .search-section, .stats-grid, .stats-section-title,
+    .toast-container, .no-print { display: none !important; }
     .container { max-width: 100%; padding: 0; }
     .book-view { box-shadow: none; border: none; padding: 0; }
     .khata-page, .khata-page.loan {
-      background: #fff !important;
-      background-image: none !important;
-      border: 1px solid #000 !important;
-      box-shadow: none !important;
+      background: #fff !important; background-image: none !important;
+      border: 1px solid #000 !important; box-shadow: none !important;
     }
     .khata-table { min-width: 100%; font-size: 10pt; }
     .khata-table thead th { background: #eee !important; color: #000 !important; border: 1px solid #000 !important; }
@@ -674,7 +498,7 @@
   }
   .print-logo { display: none; }
 
-  /* ================= RESPONSIVE ================= */
+  /* ===== RESPONSIVE ===== */
   @media (min-width: 640px) {
     .stats-grid { grid-template-columns: repeat(4, 1fr); }
     .member-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -700,8 +524,38 @@
 </head>
 <body>
 
+<!-- ================= LOGIN SCREEN ================= -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">স</div>
+      <div>
+        <h1>সঞ্চয় খাতা</h1>
+        <span>Digital Savings & Loan Book</span>
+      </div>
+    </div>
+    <h2>অ্যাডমিন লগইন করুন</h2>
+    <div class="form-group">
+      <label for="loginEmail">ইমেইল</label>
+      <input type="email" id="loginEmail" placeholder="admin@example.com" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label for="loginPassword">পাসওয়ার্ড</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="modal-actions" style="margin-top:20px;">
+      <button class="btn btn-primary" id="loginBtn" style="flex:1;">
+        <i class="fas fa-sign-in-alt"></i> লগইন
+      </button>
+    </div>
+    <p style="margin-top:14px;font-size:0.75rem;color:var(--text-light);text-align:center;">
+      শুধুমাত্র অনুমোদিত ব্যবহারকারী।
+    </p>
+  </div>
+</div>
+
 <!-- ================= HEADER ================= -->
-<header class="app-header">
+<header class="app-header hidden" id="appHeader">
   <div class="logo-area">
     <div class="logo-icon">স</div>
     <div class="logo-text">
@@ -718,17 +572,21 @@
   </nav>
 
   <div class="header-actions">
+    <span class="user-email" id="userEmailLabel"></span>
     <button class="btn btn-accent btn-sm" id="headerAddMemberBtn">
       <i class="fas fa-user-plus"></i> <span>Add Member</span>
+    </button>
+    <button class="btn btn-sm" id="logoutBtn" title="Logout">
+      <i class="fas fa-sign-out-alt"></i>
     </button>
   </div>
 </header>
 
 <!-- ================= MAIN ================= -->
-<main class="container" id="mainContent"></main>
+<main class="container hidden" id="mainContent"></main>
 
 <!-- ================= BOTTOM NAV ================= -->
-<nav class="bottom-nav">
+<nav class="bottom-nav hidden" id="bottomNav">
   <button class="nav-item active" data-nav="home"><i class="fas fa-home"></i><span>Home</span></button>
   <button class="nav-item" data-nav="savings"><i class="fas fa-coins"></i><span>সঞ্চয়</span></button>
   <button class="nav-item" data-nav="loan"><i class="fas fa-building-columns"></i><span>ঋণ</span></button>
@@ -747,8 +605,19 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/fireba
 import {
   getDatabase, ref, push, set, onValue, runTransaction
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-/* ============ FIREBASE CONFIG ============ */
+/* ============================================================
+   APP VERSION (bump freely — never triggers any data reset)
+   ============================================================ */
+const APP_VERSION = "3.0.0";
+console.log("[সঞ্চয় খাতা] App version:", APP_VERSION);
+
+/* ============================================================
+   FIREBASE CONFIG
+   ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyCiUGCxmtpcxlws0r_3SYdA75_PhcogKBA",
   authDomain: "hot-massage-cf84f.firebaseapp.com",
@@ -761,24 +630,39 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app, "https://hot-massage-cf84f-default-rtdb.firebaseio.com");
+const auth = getAuth(app);
 
-/* ============ STATE ============ */
+/* ============================================================
+   🔒 DATA SAFETY CONTRACT
+   ------------------------------------------------------------
+   - ONLY reads on startup (no writes, no resets)
+   - ONLY appends new members/transactions (push + set)
+   - ONLY soft-delete members (set deleted:true), never remove()
+   - NEVER deletes a transaction
+   - NEVER touches root nodes "members" or "transactions"
+   - NEVER writes default empty {} automatically
+   ============================================================ */
+
+/* ============================================================
+   STATE
+   ============================================================ */
 const state = {
-  savingsMembers: {},   // members/savings
-  loanMembers: {},      // members/loans
-  transactions: {       // keyed by `${bookType}/${memberId}`
-    savings: {},
-    loans: {}
-  },
+  savingsMembers: {},
+  loanMembers: {},
+  transactions: { savings: {}, loans: {} },
   currentMemberId: null,
-  currentBookType: null, // 'savings' | 'loan'
-  currentView: "home",   // 'home' | 'savings' | 'loan' | 'book'
+  currentBookType: null,
+  currentView: "home",
   searchQuery: "",
   loading: true,
-  offline: false
+  offline: false,
+  user: null,
+  listenersAttached: false
 };
 
-/* ============ UTILS ============ */
+/* ============================================================
+   UTILS
+   ============================================================ */
 function formatCurrency(amount) {
   const num = Number(amount) || 0;
   return "৳ " + num.toLocaleString("en-IN", { maximumFractionDigits: 0 });
@@ -799,9 +683,14 @@ function getDhakaDateTime() {
 
 function showToast(message, type = "info") {
   const container = document.getElementById("toastContainer");
+  if (!container) return;
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
-  const icons = { success: "fa-check-circle", error: "fa-exclamation-circle", info: "fa-info-circle" };
+  const icons = {
+    success: "fa-check-circle",
+    error: "fa-exclamation-circle",
+    info: "fa-info-circle"
+  };
   toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${message}</span>`;
   container.appendChild(toast);
   setTimeout(() => {
@@ -824,53 +713,159 @@ function setLoading(btn, isLoading, loadingText) {
 }
 
 function closeModal() {
-  document.getElementById("modalOverlay").classList.remove("active");
+  const ov = document.getElementById("modalOverlay");
+  if (ov) ov.classList.remove("active");
 }
 
-/* ============ FIREBASE LISTENERS ============ */
-function listenToAllMembers() {
-  // Savings members
-  onValue(ref(db, "members/savings"), (snap) => {
-    state.savingsMembers = snap.val() || {};
-    state.loading = false;
-    state.offline = false;
-    renderCurrentView();
-  }, (err) => handleReadError(err));
+/* ============================================================
+   AUTHENTICATION
+   ============================================================ */
+function showLoginScreen() {
+  document.getElementById("loginScreen").classList.remove("hidden");
+  document.getElementById("appHeader").classList.add("hidden");
+  document.getElementById("mainContent").classList.add("hidden");
+  document.getElementById("bottomNav").classList.add("hidden");
+}
 
-  // Loan members
-  onValue(ref(db, "members/loans"), (snap) => {
-    state.loanMembers = snap.val() || {};
+function showAppScreen(user) {
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("appHeader").classList.remove("hidden");
+  document.getElementById("mainContent").classList.remove("hidden");
+  document.getElementById("bottomNav").classList.remove("hidden");
+  const lbl = document.getElementById("userEmailLabel");
+  if (lbl) lbl.textContent = user?.email || "";
+}
+
+function initAuth() {
+  const loginBtn = document.getElementById("loginBtn");
+  const emailInput = document.getElementById("loginEmail");
+  const passInput = document.getElementById("loginPassword");
+
+  loginBtn.addEventListener("click", async () => {
+    const email = (emailInput.value || "").trim();
+    const password = passInput.value || "";
+    if (!email || !password) {
+      showToast("ইমেইল ও পাসওয়ার্ড দিন।", "error");
+      return;
+    }
+    setLoading(loginBtn, true, "লগইন হচ্ছে...");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      showToast("সফলভাবে লগইন হয়েছে।", "success");
+      passInput.value = "";
+    } catch (error) {
+      console.error("Auth Error:", error.code, error.message);
+      let msg = "লগইন ব্যর্থ হয়েছে।";
+      if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
+        msg = "ইমেইল বা পাসওয়ার্ড ভুল।";
+      } else if (error.code === "auth/user-not-found") {
+        msg = "এই ইমেইলে কোনো ব্যবহারকারী নেই।";
+      } else if (error.code === "auth/too-many-requests") {
+        msg = "অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।";
+      } else if (error.code === "auth/network-request-failed") {
+        msg = "নেটওয়ার্ক সমস্যা। ইন্টারনেট চেক করুন।";
+      }
+      showToast(msg, "error");
+    } finally {
+      setLoading(loginBtn, false);
+    }
+  });
+
+  passInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") loginBtn.click();
+  });
+
+  document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      showToast("লগআউট হয়েছে।", "info");
+    } catch (error) {
+      console.error("Logout Error:", error.code, error.message);
+    }
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    state.user = user;
+    if (user) {
+      showAppScreen(user);
+      if (!state.listenersAttached) {
+        state.listenersAttached = true;
+        listenToAllMembers();
+      }
+    } else {
+      showLoginScreen();
+      // Clear in-memory state only (not Firebase)
+      state.savingsMembers = {};
+      state.loanMembers = {};
+      state.transactions = { savings: {}, loans: {} };
+      state.currentMemberId = null;
+      state.currentBookType = null;
+      state.currentView = "home";
+      state.searchQuery = "";
+    }
+  });
+}
+
+/* ============================================================
+   FIREBASE LISTENERS (read-only)
+   ------------------------------------------------------------
+   Reads members and marks them "hidden" if deleted:true, but
+   we NEVER remove transactions.
+   ============================================================ */
+function listenToAllMembers() {
+  onValue(ref(db, "members/savings"), (snap) => {
+    const raw = snap.val() || {};
+    // UI only sees non-deleted members
+    state.savingsMembers = filterVisible(raw);
     state.loading = false;
     state.offline = false;
     renderCurrentView();
-  }, (err) => handleReadError(err));
+  }, handleReadError);
+
+  onValue(ref(db, "members/loans"), (snap) => {
+    const raw = snap.val() || {};
+    state.loanMembers = filterVisible(raw);
+    state.loading = false;
+    state.offline = false;
+    renderCurrentView();
+  }, handleReadError);
+}
+
+function filterVisible(raw) {
+  const out = {};
+  Object.entries(raw).forEach(([id, m]) => {
+    if (m && m.deleted !== true) out[id] = m;
+  });
+  return out;
 }
 
 function handleReadError(error) {
   console.error("Firebase Read Error:", error.code, error.message);
   state.offline = true;
   state.loading = false;
-  showToast("Firebase Error: " + error.code, "error");
+  showToast("Firebase Error: " + (error.code || error.message), "error");
   renderCurrentView();
 }
 
 function listenToTransactions(bookType, memberId) {
   if (!memberId || !bookType) return;
-  const path = `transactions/${bookType}/${memberId}`;
-  onValue(ref(db, path), (snap) => {
+  onValue(ref(db, `transactions/${bookType}/${memberId}`), (snap) => {
     state.transactions[bookType][memberId] = snap.val() || {};
     if (state.currentMemberId === memberId && state.currentBookType === bookType) {
       renderBookView(bookType, memberId);
     }
   }, (err) => {
     console.error("TX Read Error:", err.code, err.message);
-    showToast("Firebase Error: " + err.code, "error");
+    showToast("Firebase Error: " + (err.code || err.message), "error");
   });
 }
 
-/* ============ ROUTER ============ */
+/* ============================================================
+   ROUTER
+   ============================================================ */
 function renderCurrentView() {
   const main = document.getElementById("mainContent");
+  if (!main) return;
 
   if (state.loading) {
     main.innerHTML = `<div class="empty-state"><div class="loading-spinner" style="border-top-color:var(--primary);width:32px;height:32px;"></div><p style="margin-top:12px;">লোড হচ্ছে...</p></div>`;
@@ -905,38 +900,35 @@ function updateNavActive() {
       el.classList.add("active");
       if (nav === "loan") el.classList.add("loan");
     }
-    if (nav === "savings" && state.currentView === "book" && state.currentBookType === "savings") {
+    if (nav === "savings" && state.currentView === "book" && state.currentBookType === "savings")
       el.classList.add("active");
-    }
-    if (nav === "loan" && state.currentView === "book" && state.currentBookType === "loan") {
+    if (nav === "loan" && state.currentView === "book" && state.currentBookType === "loan")
       el.classList.add("active", "loan");
-    }
   });
 }
 
-/* ============ HOME ============ */
+/* ============================================================
+   HOME
+   ============================================================ */
 function renderHome() {
   const main = document.getElementById("mainContent");
 
-  // Savings stats
   const savingsArr = Object.entries(state.savingsMembers);
   let sDeposit = 0, sWithdraw = 0, sBalance = 0;
-  savingsArr.forEach(([id, m]) => {
+  savingsArr.forEach(([, m]) => {
     sDeposit += m.totalDeposit || 0;
     sWithdraw += m.totalWithdraw || 0;
     sBalance += m.currentBalance || 0;
   });
 
-  // Loan stats
   const loanArr = Object.entries(state.loanMembers);
   let lTotalLoan = 0, lPaid = 0, lOutstanding = 0;
-  loanArr.forEach(([id, m]) => {
+  loanArr.forEach(([, m]) => {
     lTotalLoan += m.totalLoan || 0;
     lPaid += m.totalPaid || 0;
     lOutstanding += m.outstanding || 0;
   });
 
-  // Search
   const q = state.searchQuery.toLowerCase().trim();
   let searchResults = [];
   if (q) {
@@ -960,8 +952,9 @@ function renderHome() {
     ${q ? `
       <h2 style="font-size:1.1rem;margin-bottom:12px;">অনুসন্ধানের ফলাফল (${searchResults.length})</h2>
       <div class="member-list">
-        ${searchResults.length === 0 ? `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-search"></i><p>কোনো সদস্য পাওয়া যায়নি।</p></div>` :
-          searchResults.map(r => memberCardHTML(r.book, r.id, r.m)).join("")}
+        ${searchResults.length === 0
+          ? `<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-search"></i><p>কোনো সদস্য পাওয়া যায়নি।</p></div>`
+          : searchResults.map(r => memberCardHTML(r.book, r.id, r.m)).join("")}
       </div>
     ` : `
       <div class="stats-section-title"><i class="fas fa-coins"></i> 💰 সঞ্চয় সারাংশ</div>
@@ -998,10 +991,9 @@ function renderHome() {
   const si = document.getElementById("searchInput");
   if (si) si.addEventListener("input", (e) => { state.searchQuery = e.target.value; renderHome(); });
   document.getElementById("clearSearch")?.addEventListener("click", () => { state.searchQuery = ""; renderHome(); });
-  document.getElementById("homeAddMemberBtn")?.addEventListener("click", openAddMemberModal);
-  document.getElementById("homeAddMemberBtn2")?.addEventListener("click", openAddMemberModal);
+  document.getElementById("homeAddMemberBtn")?.addEventListener("click", () => openAddMemberModal());
+  document.getElementById("homeAddMemberBtn2")?.addEventListener("click", () => openAddMemberModal());
 
-  // Re-bind quick-access nav
   main.querySelectorAll("[data-nav]").forEach((btn) => {
     btn.addEventListener("click", () => {
       state.currentView = btn.dataset.nav;
@@ -1014,7 +1006,9 @@ function renderHome() {
   bindMemberCardEvents();
 }
 
-/* ============ BOOK LIST (savings or loan) ============ */
+/* ============================================================
+   BOOK LIST
+   ============================================================ */
 function renderBookList(bookType) {
   const main = document.getElementById("mainContent");
   const isLoan = bookType === "loan";
@@ -1060,7 +1054,7 @@ function memberCardHTML(bookType, id, m) {
           <span class="member-name">${m.name || "নাম নেই"}</span>
           <span class="member-balance">বাকি ${formatCurrency(outstanding)}</span>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
           ${badge}
         </div>
         <div class="member-meta">
@@ -1071,6 +1065,7 @@ function memberCardHTML(bookType, id, m) {
           <button class="btn btn-sm btn-loan" data-action="addLoan" data-member-id="${id}"><i class="fas fa-plus-circle"></i> নতুন ঋণ</button>
           <button class="btn btn-sm btn-loan-soft" data-action="repay" data-member-id="${id}"><i class="fas fa-hand-holding-dollar"></i> পরিশোধ</button>
           <button class="btn btn-sm" data-action="open" data-member-id="${id}"><i class="fas fa-book-open"></i> খাতা</button>
+          <button class="btn btn-sm btn-danger" data-action="delete" data-member-id="${id}"><i class="fas fa-eye-slash"></i> মুছুন</button>
         </div>
       </div>
     `;
@@ -1085,7 +1080,7 @@ function memberCardHTML(bookType, id, m) {
         <span class="member-name">${m.name || "নাম নেই"}</span>
         <span class="member-balance">${formatCurrency(balance)}</span>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
         ${badge}
       </div>
       <div class="member-meta">
@@ -1096,6 +1091,7 @@ function memberCardHTML(bookType, id, m) {
         <button class="btn btn-sm btn-accent" data-action="deposit" data-member-id="${id}"><i class="fas fa-plus-circle"></i> জমা</button>
         <button class="btn btn-sm btn-danger" data-action="withdraw" data-member-id="${id}"><i class="fas fa-minus-circle"></i> উত্তোলন</button>
         <button class="btn btn-sm" data-action="open" data-member-id="${id}"><i class="fas fa-book-open"></i> খাতা</button>
+        <button class="btn btn-sm btn-danger" data-action="delete" data-member-id="${id}"><i class="fas fa-eye-slash"></i> মুছুন</button>
       </div>
     </div>
   `;
@@ -1108,28 +1104,31 @@ function bindMemberCardEvents() {
       openBook(card.dataset.bookType, card.dataset.memberId);
     });
   });
-  document.querySelectorAll('[data-action="deposit"]').forEach((btn) => {
-    btn.addEventListener("click", (e) => { e.stopPropagation(); openDepositModal(btn.dataset.memberId); });
-  });
-  document.querySelectorAll('[data-action="withdraw"]').forEach((btn) => {
-    btn.addEventListener("click", (e) => { e.stopPropagation(); openWithdrawModal(btn.dataset.memberId); });
-  });
-  document.querySelectorAll('[data-action="addLoan"]').forEach((btn) => {
-    btn.addEventListener("click", (e) => { e.stopPropagation(); openNewLoanModal(btn.dataset.memberId); });
-  });
-  document.querySelectorAll('[data-action="repay"]').forEach((btn) => {
-    btn.addEventListener("click", (e) => { e.stopPropagation(); openRepayModal(btn.dataset.memberId); });
-  });
-  document.querySelectorAll('[data-action="open"]').forEach((btn) => {
+  document.querySelectorAll('[data-action="deposit"]').forEach((btn) =>
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openDepositModal(btn.dataset.memberId); }));
+  document.querySelectorAll('[data-action="withdraw"]').forEach((btn) =>
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openWithdrawModal(btn.dataset.memberId); }));
+  document.querySelectorAll('[data-action="addLoan"]').forEach((btn) =>
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openNewLoanModal(btn.dataset.memberId); }));
+  document.querySelectorAll('[data-action="repay"]').forEach((btn) =>
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openRepayModal(btn.dataset.memberId); }));
+  document.querySelectorAll('[data-action="open"]').forEach((btn) =>
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const card = btn.closest(".member-card");
       openBook(card.dataset.bookType, card.dataset.memberId);
-    });
-  });
+    }));
+  document.querySelectorAll('[data-action="delete"]').forEach((btn) =>
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const card = btn.closest(".member-card");
+      openSoftDeleteFlow(card.dataset.bookType, card.dataset.memberId);
+    }));
 }
 
-/* ============ BOOK VIEW ============ */
+/* ============================================================
+   BOOK VIEW (Savings + Loan)
+   ============================================================ */
 function renderBookView(bookType, memberId) {
   const main = document.getElementById("mainContent");
   const isLoan = bookType === "loan";
@@ -1145,7 +1144,7 @@ function renderBookView(bookType, memberId) {
   const txs = state.transactions[bookType][memberId] || {};
   const txArray = Object.entries(txs)
     .map(([id, tx]) => ({ id, ...tx }))
-    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); // newest first
+    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
   const titleIcon = isLoan ? "🏦" : "💰";
   const titleBn   = isLoan ? "ঋণ খাতা" : "সঞ্চয় খাতা";
@@ -1245,12 +1244,14 @@ function renderBookView(bookType, memberId) {
       <button class="btn btn-sm btn-loan-soft" id="bookRepayBtn"><i class="fas fa-hand-holding-dollar"></i> পরিশোধ</button>
       <button class="btn btn-sm" id="bookPrintBtn"><i class="fas fa-print"></i> প্রিন্ট</button>
       <button class="btn btn-sm" id="bookBackBtn"><i class="fas fa-arrow-left"></i> ফিরে যান</button>
+      <button class="btn btn-sm btn-danger" id="bookDeleteBtn"><i class="fas fa-eye-slash"></i> সদস্য মুছুন</button>
     `
     : `
       <button class="btn btn-sm btn-accent" id="bookDepositBtn"><i class="fas fa-plus-circle"></i> জমা</button>
       <button class="btn btn-sm btn-danger" id="bookWithdrawBtn"><i class="fas fa-minus-circle"></i> উত্তোলন</button>
       <button class="btn btn-sm" id="bookPrintBtn"><i class="fas fa-print"></i> প্রিন্ট</button>
       <button class="btn btn-sm" id="bookBackBtn"><i class="fas fa-arrow-left"></i> ফিরে যান</button>
+      <button class="btn btn-sm btn-danger" id="bookDeleteBtn"><i class="fas fa-eye-slash"></i> সদস্য মুছুন</button>
     `;
 
   main.innerHTML = `
@@ -1278,7 +1279,6 @@ function renderBookView(bookType, memberId) {
     </div>
   `;
 
-  // Bind actions
   if (isLoan) {
     document.getElementById("bookNewLoanBtn")?.addEventListener("click", () => openNewLoanModal(memberId));
     document.getElementById("bookRepayBtn")?.addEventListener("click", () => openRepayModal(memberId));
@@ -1293,8 +1293,10 @@ function renderBookView(bookType, memberId) {
     state.currentBookType = null;
     renderCurrentView();
   });
+  document.getElementById("bookDeleteBtn")?.addEventListener("click", () => {
+    openSoftDeleteFlow(bookType, memberId);
+  });
 
-  // Clickable rows
   document.querySelectorAll(".khata-table tbody tr[data-tx-id]").forEach((tr) => {
     tr.addEventListener("click", () => {
       const txId = tr.dataset.txId;
@@ -1304,7 +1306,9 @@ function renderBookView(bookType, memberId) {
   });
 }
 
-/* ============ TX DETAIL MODAL ============ */
+/* ============================================================
+   TX DETAIL MODAL
+   ============================================================ */
 function openTransactionDetailModal(bookType, member, tx) {
   const overlay = document.getElementById("modalOverlay");
   const modal = document.getElementById("modalContent");
@@ -1361,11 +1365,12 @@ function openTransactionDetailModal(bookType, member, tx) {
   document.getElementById("txDetailClose").onclick = closeModal;
 }
 
-/* ============ ADD MEMBER (2-STEP) ============ */
+/* ============================================================
+   ADD MEMBER
+   ============================================================ */
 function openAddMemberModal(preselectedType) {
   const overlay = document.getElementById("modalOverlay");
   const modal = document.getElementById("modalContent");
-
   let selectedType = preselectedType || null;
 
   function renderStep1() {
@@ -1440,54 +1445,46 @@ async function saveNewMember(bookType, input) {
 
   const isLoan = bookType === "loan";
   const collection = isLoan ? state.loanMembers : state.savingsMembers;
-
   const duplicate = Object.values(collection || {}).find(
     (m) => (m.normalizedName || (m.name || "").toLowerCase().trim()) === normalizedName
   );
   if (duplicate) {
     showToast(
-      isLoan
-        ? "এই সদস্যের Loan বই ইতিমধ্যে রয়েছে।"
-        : "এই সদস্যের Savings বই ইতিমধ্যে রয়েছে।",
+      isLoan ? "এই সদস্যের Loan বই ইতিমধ্যে রয়েছে।" : "এই সদস্যের Savings বই ইতিমধ্যে রয়েছে।",
       "error"
     );
     return;
   }
 
   setLoading(btn, true, "সংরক্ষণ হচ্ছে...");
-
   try {
     const memberPath = isLoan ? "members/loans" : "members/savings";
-    const membersRef = ref(db, memberPath);
-    const newMemberRef = push(membersRef);
+    const newMemberRef = push(ref(db, memberPath));
     const memberId = newMemberRef.key;
 
     const { date } = getDhakaDateTime();
-
     const base = {
       name: rawName,
       normalizedName,
       type: bookType,
       createdAt: Date.now(),
-      createdDate: date
+      createdDate: date,
+      deleted: false
     };
-
     const memberData = isLoan
       ? { ...base, totalLoan: 0, totalPaid: 0, outstanding: 0 }
       : { ...base, currentBalance: 0, totalDeposit: 0, totalWithdraw: 0 };
 
     await set(newMemberRef, memberData);
 
-    // Initialize empty transaction node
-    const txPath = isLoan
-      ? `transactions/loans/${memberId}`
-      : `transactions/savings/${memberId}`;
+    // Initialize EMPTY transaction node ONLY for this new member
+    // (safe — brand new node, does not affect existing history)
+    const txPath = isLoan ? `transactions/loans/${memberId}` : `transactions/savings/${memberId}`;
     await set(ref(db, txPath), {});
 
     showToast(`সদস্য "${rawName}" (${isLoan ? "ঋণ" : "সঞ্চয়"}) সফলভাবে যোগ করা হয়েছে।`, "success");
     input.value = "";
     closeModal();
-
     setTimeout(() => openBook(bookType, memberId), 300);
   } catch (error) {
     console.error("Firebase Error:", error);
@@ -1507,7 +1504,9 @@ function openBook(bookType, memberId) {
   renderCurrentView();
 }
 
-/* ============ SAVINGS: DEPOSIT ============ */
+/* ============================================================
+   SAVINGS: DEPOSIT / WITHDRAW
+   ============================================================ */
 function openDepositModal(memberId) {
   const member = state.savingsMembers[memberId];
   if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
@@ -1554,7 +1553,6 @@ function openDepositModal(memberId) {
   };
 }
 
-/* ============ SAVINGS: WITHDRAW ============ */
 function openWithdrawModal(memberId) {
   const member = state.savingsMembers[memberId];
   if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
@@ -1618,8 +1616,7 @@ async function processSavingsTransaction(memberId, type, amount, description) {
 
   const { date, time, timestamp } = getDhakaDateTime();
 
-  const memberRef = ref(db, `members/savings/${memberId}`);
-  await runTransaction(memberRef, (data) => {
+  await runTransaction(ref(db, `members/savings/${memberId}`), (data) => {
     if (!data) return data;
     if (type === "deposit") {
       data.currentBalance = (data.currentBalance || 0) + amount;
@@ -1631,8 +1628,8 @@ async function processSavingsTransaction(memberId, type, amount, description) {
     return data;
   });
 
-  const txRef = ref(db, `transactions/savings/${memberId}`);
-  await set(push(txRef), {
+  // Append-only transaction. Never overwrites existing.
+  await set(push(ref(db, `transactions/savings/${memberId}`)), {
     type, amount,
     description: description || (type === "deposit" ? "সঞ্চয়" : "উত্তোলন"),
     date, time, timestamp,
@@ -1641,7 +1638,9 @@ async function processSavingsTransaction(memberId, type, amount, description) {
   return true;
 }
 
-/* ============ LOAN: NEW LOAN ============ */
+/* ============================================================
+   LOAN: NEW LOAN / REPAY
+   ============================================================ */
 function openNewLoanModal(memberId) {
   const member = state.loanMembers[memberId];
   if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
@@ -1688,7 +1687,6 @@ function openNewLoanModal(memberId) {
   };
 }
 
-/* ============ LOAN: REPAY ============ */
 function openRepayModal(memberId) {
   const member = state.loanMembers[memberId];
   if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
@@ -1763,7 +1761,7 @@ async function processLoanTransaction(memberId, type, amount, description) {
   if (type === "loan") {
     newTotalLoan = totalLoan + amount;
     newOutstanding = outstanding + amount;
-  } else { // repay
+  } else {
     if (outstanding <= 0) throw new Error("এই ঋণ সম্পূর্ণ পরিশোধ করা হয়েছে।");
     if (amount > outstanding) throw new Error("পরিশোধের পরিমাণ বাকি ঋণের চেয়ে বেশি হতে পারবে না।");
     newTotalPaid = totalPaid + amount;
@@ -1772,8 +1770,7 @@ async function processLoanTransaction(memberId, type, amount, description) {
 
   const { date, time, timestamp } = getDhakaDateTime();
 
-  const memberRef = ref(db, `members/loans/${memberId}`);
-  await runTransaction(memberRef, (data) => {
+  await runTransaction(ref(db, `members/loans/${memberId}`), (data) => {
     if (!data) return data;
     data.totalLoan = newTotalLoan;
     data.totalPaid = newTotalPaid;
@@ -1781,10 +1778,8 @@ async function processLoanTransaction(memberId, type, amount, description) {
     return data;
   });
 
-  const txRef = ref(db, `transactions/loans/${memberId}`);
-  await set(push(txRef), {
-    type,
-    amount,
+  await set(push(ref(db, `transactions/loans/${memberId}`)), {
+    type, amount,
     description: description || (type === "loan" ? "নতুন ঋণ" : "ঋণ পরিশোধ"),
     date, time, timestamp,
     outstandingAfter: newOutstanding
@@ -1792,11 +1787,99 @@ async function processLoanTransaction(memberId, type, amount, description) {
   return true;
 }
 
-/* ============ INIT ============ */
-function init() {
-  listenToAllMembers();
+/* ============================================================
+   SOFT DELETE MEMBER (double confirmation)
+   ------------------------------------------------------------
+   - Marks member.deleted = true, sets deletedAt timestamp
+   - NEVER removes member node
+   - NEVER removes ANY transaction
+   - Savings and Loan are independent — deleting one never
+     touches the other.
+   ============================================================ */
+function openSoftDeleteFlow(bookType, memberId) {
+  const isLoan = bookType === "loan";
+  const member = isLoan ? state.loanMembers[memberId] : state.savingsMembers[memberId];
+  if (!member) { showToast("সদস্য পাওয়া যায়নি।", "error"); return; }
 
-  document.getElementById("headerAddMemberBtn").addEventListener("click", () => openAddMemberModal());
+  const overlay = document.getElementById("modalOverlay");
+  const modal = document.getElementById("modalContent");
+
+  modal.innerHTML = `
+    <h3 class="danger"><i class="fas fa-eye-slash" style="margin-right:8px;"></i> সদস্য লুকাবেন?</h3>
+    <div class="danger-box">
+      আপনি কি এই সদস্যকে তালিকা থেকে লুকাতে চান?
+    </div>
+    <div class="tx-detail-row"><span class="label">সদস্য</span><span class="value">${member.name || "—"}</span></div>
+    <div class="tx-detail-row"><span class="label">ধরন</span><span class="value">${isLoan ? "Loan" : "Savings"}</span></div>
+    <div class="modal-actions">
+      <button class="btn" id="delCancel1">বাতিল</button>
+      <button class="btn btn-danger" id="delNext">পরবর্তী →</button>
+    </div>
+  `;
+  overlay.classList.add("active");
+  document.getElementById("delCancel1").onclick = closeModal;
+  document.getElementById("delNext").onclick = renderStep2;
+
+  function renderStep2() {
+    modal.innerHTML = `
+      <h3 class="danger"><i class="fas fa-triangle-exclamation" style="margin-right:8px;"></i> নিশ্চিত করুন</h3>
+      <div class="danger-box">
+        এই সদস্য তালিকা থেকে লুকিয়ে যাবে।
+        <br>তবে তার <strong>সকল লেনদেন এবং ইতিহাস Firebase-এ অপরিবর্তিত থাকবে</strong>।
+        <br>এটি কোনো permanent data loss নয় — শুধু UI থেকে লুকানো।
+      </div>
+      <div class="tx-detail-row"><span class="label">সদস্য</span><span class="value">${member.name || "—"}</span></div>
+      <div class="tx-detail-row"><span class="label">ধরন</span><span class="value">${isLoan ? "Loan" : "Savings"}</span></div>
+      <div class="modal-actions">
+        <button class="btn" id="delCancel2">বাতিল</button>
+        <button class="btn btn-danger" id="delConfirm"><i class="fas fa-eye-slash"></i> হ্যাঁ, লুকান</button>
+      </div>
+    `;
+    document.getElementById("delCancel2").onclick = closeModal;
+    document.getElementById("delConfirm").onclick = () => performSoftDelete(bookType, memberId);
+  }
+}
+
+async function performSoftDelete(bookType, memberId) {
+  const btn = document.getElementById("delConfirm");
+  setLoading(btn, true, "লুকানো হচ্ছে...");
+
+  const isLoan = bookType === "loan";
+  const memberPath = isLoan ? `members/loans/${memberId}` : `members/savings/${memberId}`;
+
+  try {
+    // ✅ SOFT DELETE: mark deleted:true, keep node & transactions
+    await runTransaction(ref(db, memberPath), (data) => {
+      if (!data) return data;
+      data.deleted = true;
+      data.deletedAt = Date.now();
+      return data;
+    });
+
+    showToast("সদস্য সফলভাবে তালিকা থেকে লুকানো হয়েছে।", "success");
+    closeModal();
+
+    if (state.currentMemberId === memberId && state.currentBookType === bookType) {
+      state.currentMemberId = null;
+      state.currentBookType = null;
+      state.currentView = isLoan ? "loan" : "savings";
+    }
+    renderCurrentView();
+  } catch (error) {
+    console.error("Soft Delete Error:", error);
+    console.error("Error Code:", error.code);
+    console.error("Error Message:", error.message);
+    showToast("সদস্য লুকানো যায়নি। আবার চেষ্টা করুন।", "error");
+  } finally {
+    setLoading(btn, false);
+  }
+}
+
+/* ============================================================
+   GLOBAL NAV WIRING
+   ============================================================ */
+function bindGlobalNav() {
+  document.getElementById("headerAddMemberBtn")?.addEventListener("click", () => openAddMemberModal());
 
   document.querySelectorAll("[data-nav]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -1810,15 +1893,20 @@ function init() {
     });
   });
 
-  document.getElementById("modalOverlay").addEventListener("click", (e) => {
+  document.getElementById("modalOverlay")?.addEventListener("click", (e) => {
     if (e.target === e.currentTarget) closeModal();
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
-
-  renderCurrentView();
 }
 
-init();
+/* ============================================================
+   BOOT
+   ------------------------------------------------------------
+   Auth state drives everything. We do NOT read/write Firebase
+   until a user is authenticated.
+   ============================================================ */
+bindGlobalNav();
+initAuth();
 </script>
 </body>
 </html>
