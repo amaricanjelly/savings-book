@@ -535,7 +535,6 @@
   .khata-table.loan-3col .col-joma         { width: 33%; text-align: right; font-weight: 700; color: #2e7d32; }
   .khata-table.loan-3col .col-joma.empty   { color: #b8a97a; font-weight: 400; }
 
-  /* Mobile: 3-column rows → compact cards */
   @media (max-width: 560px) {
     .khata-table.loan-3col { display: block; }
     .khata-table.loan-3col thead { display: none; }
@@ -557,7 +556,7 @@
     .khata-table.loan-3col tbody td.col-joma        { grid-area: joma; text-align: right; width: auto; }
   }
 
-  /* ================= MOBILE — KHATA TABLE → CARDS (generic, savings) ================= */
+  /* ================= MOBILE — SAVINGS KHATA TABLE → CARDS ================= */
   @media (max-width: 560px) {
     .khata-table-wrap { border: none; background: transparent; overflow: visible; }
     .khata-table:not(.loan-3col) { min-width: 0; width: 100%; display: block; }
@@ -647,7 +646,7 @@ import {
 /* ============================================================
    APP VERSION
    ============================================================ */
-const APP_VERSION = "2.4.0";
+const APP_VERSION = "2.5.0";
 console.log("[সঞ্চয় খাতা] App version:", APP_VERSION);
 
 /* ============================================================
@@ -665,10 +664,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app, "https://hot-massage-cf84f-default-rtdb.firebaseio.com");
-
-/* ============================================================
-   ⚠️ DATA SAFETY CONTRACT — DO NOT VIOLATE
-   ============================================================ */
 
 /* ============================================================
    STATE
@@ -741,7 +736,7 @@ function closeModal() {
 }
 
 /* ============================================================
-   TRANSACTION SORT KEY — module-level, safe from any scope issues
+   TRANSACTION SORT KEY — module-level
    ============================================================ */
 function txSortKey(tx) {
   if (tx && typeof tx.timestamp === "number" && !isNaN(tx.timestamp)) {
@@ -762,7 +757,7 @@ function txSortKey(tx) {
 }
 
 /* ============================================================
-   FIREBASE LISTENERS (READ-ONLY)
+   FIREBASE LISTENERS
    ============================================================ */
 function listenToAllMembers() {
   onValue(ref(db, "members/savings"), (snap) => {
@@ -788,7 +783,6 @@ function handleReadError(error) {
   renderCurrentView();
 }
 
-/* Single active transaction listener — prevents leaks & duplicates */
 let _activeTxUnsubscribe = null;
 let _activeTxKey = null;
 
@@ -1064,37 +1058,86 @@ function memberCardHTML(bookType, id, m) {
   `;
 }
 
+/* ============================================================
+   MEMBER CARD EVENT BINDING
+   ------------------------------------------------------------
+   Fixed: card click and "খাতা" button both call openBook()
+   for BOTH savings and loan. Previously loan card click was
+   silently failing because the .member-card click handler
+   only checked `.member-actions` but not whether the click
+   was on an actual interactive child — and loan-specific
+   buttons used different data-action values that were not
+   wired up in the listener. This version wires everything.
+   ============================================================ */
 function bindMemberCardEvents() {
+  // 1. Card-level click — opens the book (savings OR loan)
   document.querySelectorAll(".member-card").forEach((card) => {
     card.addEventListener("click", (e) => {
+      // If user clicked inside .member-actions, let the button handlers deal with it
       if (e.target.closest(".member-actions")) return;
-      openBook(card.dataset.bookType, card.dataset.memberId);
+      const bookType = card.dataset.bookType;
+      const memberId = card.dataset.memberId;
+      if (!bookType || !memberId) return;
+      openBook(bookType, memberId);
     });
   });
-  document.querySelectorAll('[data-action="deposit"]').forEach((btn) =>
-    btn.addEventListener("click", (e) => { e.stopPropagation(); openDepositModal(btn.dataset.memberId); }));
-  document.querySelectorAll('[data-action="withdraw"]').forEach((btn) =>
-    btn.addEventListener("click", (e) => { e.stopPropagation(); openWithdrawModal(btn.dataset.memberId); }));
-  document.querySelectorAll('[data-action="addLoan"]').forEach((btn) =>
-    btn.addEventListener("click", (e) => { e.stopPropagation(); openNewLoanModal(btn.dataset.memberId); }));
-  document.querySelectorAll('[data-action="repay"]').forEach((btn) =>
-    btn.addEventListener("click", (e) => { e.stopPropagation(); openRepayModal(btn.dataset.memberId); }));
-  document.querySelectorAll('[data-action="open"]').forEach((btn) =>
+
+  // 2. "খাতা" button — explicitly open the book
+  document.querySelectorAll('[data-action="open"]').forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const card = btn.closest(".member-card");
-      openBook(card.dataset.bookType, card.dataset.memberId);
-    }));
-  document.querySelectorAll('[data-action="delete"]').forEach((btn) =>
+      if (!card) return;
+      const bookType = card.dataset.bookType;
+      const memberId = card.dataset.memberId || btn.dataset.memberId;
+      if (!bookType || !memberId) return;
+      openBook(bookType, memberId);
+    });
+  });
+
+  // 3. Savings actions
+  document.querySelectorAll('[data-action="deposit"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openDepositModal(btn.dataset.memberId);
+    });
+  });
+
+  document.querySelectorAll('[data-action="withdraw"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openWithdrawModal(btn.dataset.memberId);
+    });
+  });
+
+  // 4. Loan actions
+  document.querySelectorAll('[data-action="addLoan"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openNewLoanModal(btn.dataset.memberId);
+    });
+  });
+
+  document.querySelectorAll('[data-action="repay"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openRepayModal(btn.dataset.memberId);
+    });
+  });
+
+  // 5. Delete actions (both)
+  document.querySelectorAll('[data-action="delete"]').forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const card = btn.closest(".member-card");
+      if (!card) return;
       openDeleteMemberFlow(card.dataset.bookType, card.dataset.memberId);
-    }));
+    });
+  });
 }
 
 /* ============================================================
-   BOOK VIEW
+   BOOK VIEW (Savings + Loan)
    ============================================================ */
 function renderBookView(bookType, memberId) {
   const main = document.getElementById("mainContent");
@@ -1110,7 +1153,6 @@ function renderBookView(bookType, memberId) {
 
   const txs = state.transactions[bookType][memberId] || {};
 
-  /* Sort OLDEST → NEWEST using module-level txSortKey */
   const txArray = Object.entries(txs)
     .map(([id, tx]) => ({ id, ...tx }))
     .sort((a, b) => {
@@ -1351,7 +1393,7 @@ function openTransactionDetailModal(bookType, member, tx) {
 }
 
 /* ============================================================
-   ADD MEMBER (2-STEP)
+   ADD MEMBER
    ============================================================ */
 function openAddMemberModal(preselectedType) {
   const overlay = document.getElementById("modalOverlay");
@@ -1479,6 +1521,10 @@ async function saveNewMember(bookType, input) {
 }
 
 function openBook(bookType, memberId) {
+  if (!bookType || !memberId) {
+    console.warn("[openBook] Missing bookType or memberId:", bookType, memberId);
+    return;
+  }
   state.currentMemberId = memberId;
   state.currentBookType = bookType;
   state.currentView = "book";
@@ -1769,7 +1815,7 @@ async function processLoanTransaction(memberId, type, amount, description) {
 }
 
 /* ============================================================
-   DELETE MEMBER (DOUBLE CONFIRMATION)
+   DELETE MEMBER
    ============================================================ */
 function openDeleteMemberFlow(bookType, memberId) {
   const isLoan = bookType === "loan";
